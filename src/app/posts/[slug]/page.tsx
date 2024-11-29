@@ -8,7 +8,7 @@ import Link from 'next/link';
 import BlogPostComponent from '@/app/components/Blog';
 
 // Server Component that fetches data on the server side
-const BlogPost = async ({ params }: { params: { slug: string } }) => {
+const BlogPost = async ({ params }: { params: Promise<any> }) => {
   const { slug } =  await params;
 
   // Fetch the blog data from the API
