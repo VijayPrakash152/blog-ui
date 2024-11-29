@@ -19,3 +19,54 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@keyframes rotateGradient {
+  0% {
+    box-shadow: 0 0 8px 2px rgba(0, 255, 255, 0.6), 0 0 24px 4px rgba(75, 0, 130, 0.8), 0 0 48px 6px rgba(0, 255, 0, 0.5), 0 0 64px 8px rgba(0, 0, 255, 0.6);
+  }
+  25% {
+    box-shadow: 0 0 8px 2px rgba(0, 255, 255, 0.6), 0 0 24px 4px rgba(75, 0, 130, 0.8), 0 0 48px 6px rgba(0, 255, 0, 0.5), 0 0 64px 8px rgba(0, 0, 255, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 8px 2px rgba(0, 255, 255, 0.6), 0 0 24px 4px rgba(75, 0, 130, 0.8), 0 0 48px 6px rgba(0, 255, 0, 0.5), 0 0 64px 8px rgba(0, 0, 255, 0.6);
+  }
+  75% {
+    box-shadow: 0 0 8px 2px rgba(0, 255, 255, 0.6), 0 0 24px 4px rgba(75, 0, 130, 0.8), 0 0 48px 6px rgba(0, 255, 0, 0.5), 0 0 64px 8px rgba(0, 0, 255, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 8px 2px rgba(0, 255, 255, 0.6), 0 0 24px 4px rgba(75, 0, 130, 0.8), 0 0 48px 6px rgba(0, 255, 0, 0.5), 0 0 64px 8px rgba(0, 0, 255, 0.6);
+  }
+}
+
+/* Apply the rotating shiny border to the profile picture using box-shadow */
+.profile-picture {
+  border-radius: 50%;
+  padding: 2px;
+  box-sizing: border-box;
+  animation: rotateGradient 4s infinite linear;
+}
+
+/* About Me Section with higher z-index */
+.about-me-section {
+  position: relative;
+  z-index: 10; /* Increase the z-index to make sure it stays on top */
+}
+
+/* Add a slight box shadow for emphasis */
+.about-me-section:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Curvy Background with clip-path */
+.clip-path-section {
+  position: relative;
+  background: radial-gradient(circle, #2d3748, #1a202c); /* Circular Gradient */
+  clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 75% 75%, 75% 100%, 50% 75%, 0% 75%);
+  padding: 30px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+
+
