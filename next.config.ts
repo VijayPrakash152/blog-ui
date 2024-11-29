@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/blogs',  // your frontend route
-        destination: 'http://localhost:1337/api/blogs',  // backend API
+        destination: `${process.env.NEXT_PUBLIC_API_URL}/api/blogs`,  // backend API
       },
     ];
   },
