@@ -11,18 +11,6 @@ export const getCookieValue = (name: string): string | null => {
     return cookie ? decodeURIComponent(cookie.split("=")[1]) : null;
   };
   
-// src/common/helpers.ts
-export const postToNativeApp = (data: Record<string, unknown>): void => {
-    if (typeof window !== "undefined" && window.ReactNativeWebView) {
-      // Communication with React Native WebView (Android)
-      window.ReactNativeWebView.postMessage(JSON.stringify(data));
-    } else if (typeof window !== "undefined" && window.webkit?.messageHandlers?.nativeHandler) {
-      // Communication with iOS WebView
-      window.webkit.messageHandlers.nativeHandler.postMessage(data);
-    } else {
-      console.warn("postToNativeApp: Native app handler is not available.");
-    }
-  };
 
   // src/common/helpers.ts
 

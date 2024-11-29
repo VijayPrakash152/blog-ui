@@ -2,8 +2,13 @@
 import React from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import {  Daum } from "@/api/blog/blog.interface";
 
-const BlogPostComponent = ({ blog }: any) => {
+interface BlogPostComponentProps {
+  blog: Daum
+}
+
+const BlogPostComponent = ({ blog }: BlogPostComponentProps) => {
   if (!blog) {
     notFound(); // Trigger 404 page
   }

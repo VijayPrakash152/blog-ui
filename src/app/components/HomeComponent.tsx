@@ -1,9 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
-import { Daum } from "@/api/blog/blog.interface";
+import {  Daum } from "@/api/blog/blog.interface";
 
-const HomeComponent = ({ data }: any) => {
+interface HomeComponentProps{
+  data: Daum[]
+}
+
+const HomeComponent = ({ data }: HomeComponentProps) => {
   return (
     <div className="bg-gray-50 text-gray-900">
       {/* Hero Section */}
@@ -33,7 +37,7 @@ const HomeComponent = ({ data }: any) => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
             {data ? (
-              data?.map((blog: any) => (
+              data?.map((blog: Daum) => (
                 <div
                   key={blog.id}
                   className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transform transition-all hover:scale-105"

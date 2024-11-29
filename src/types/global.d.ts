@@ -7,9 +7,13 @@ interface Window {
     webkit?: {
       messageHandlers?: {
         nativeHandler?: {
-          postMessage: (message: any) => void;
+          postMessage: (message: string) => void;
         };
       };
     };
   }
-  
+  declare namespace JSX {
+    interface IntrinsicElements {
+        'hyvor-talk-comments': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+    }
+}

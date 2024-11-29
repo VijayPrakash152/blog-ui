@@ -4,11 +4,14 @@ import React from 'react';
 import { notFound } from 'next/navigation'; // To handle 404s if the blog is not found
 import { remark } from 'remark';
 import html from 'remark-html';
-import Link from 'next/link';
 import BlogPostComponent from '@/app/components/Blog';
 
+interface Params{
+  slug: string;
+}
+
 // Server Component that fetches data on the server side
-const BlogPost = async ({ params }: { params: Promise<any> }) => {
+const BlogPost = async ({ params }: { params: Promise<Params> }) => {
   const { slug } =  await params;
 
   // Fetch the blog data from the API

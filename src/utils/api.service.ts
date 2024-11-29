@@ -1,6 +1,6 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosError, AxiosInstance } from "axios";
 import axiosRetry from "axios-retry";
-import { addTimestampToUrl, getAccessToken, getCookieValue, getXrefToken, postToNativeApp } from "./helper.service";
+import { addTimestampToUrl, getAccessToken, getCookieValue, getXrefToken } from "./helper.service";
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL + "/api",
@@ -34,10 +34,9 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-function handleApiError(error: any) {
+function handleApiError(error: AxiosError) {
   if (error.response?.status === 401 || error.response?.status === 403) {
     if (getCookieValue("source") === "native") {
-      postToNativeApp({ TOKEN_EXPIRED: true });
     } else {
       window.location.href = "/logout";
     }
@@ -68,7 +67,7 @@ export const putRequest = async <T>(endpoint: string, data: T) => {
   return axiosInstance.put(url, data, { headers: getDynamicHeaders() });
 };
 
-export const getRequest = async (endpoint: string,params: any = {}) => {
+export const getRequest = async (endpoint: string,params = {}) => {
   const url = addTimestampToUrl(endpoint);
   return axiosInstance.get(url, { headers: getDynamicHeaders(),params: params });
 };

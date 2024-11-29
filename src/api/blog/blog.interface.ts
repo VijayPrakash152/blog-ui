@@ -1,5 +1,5 @@
 export interface FetchBlogsParams {
-    filters?: { [key: string]: any }; // Optionally pass filters for querying blogs
+    filters?: { [key: string]: string }; // Optionally pass filters for querying blogs
     sort?: string; // Optional sorting parameter
   }
 
@@ -17,6 +17,16 @@ export interface FetchBlogsParams {
     createdAt: string
     updatedAt: string
     publishedAt: string
+    thumbnail: Thumbnail
+    category: Category
+  }
+
+  export interface Category {
+    name: string
+  }
+
+  export interface Thumbnail {
+    url: string;
   }
   
   export interface Meta {
