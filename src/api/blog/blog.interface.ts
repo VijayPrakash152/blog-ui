@@ -19,7 +19,28 @@ export interface FetchBlogsParams {
     publishedAt: string
     thumbnail: Thumbnail
     category: Category
+    metadata: MetadataDto
   }
+
+  export interface MetadataDto {
+    id: number; // Unique identifier for the metadata
+    title: string; // Title of the blog
+    description: string; // Short description or summary of the blog
+    keywords: KeywordDto[]; // List of keywords associated with the blog
+    image: ImageDto; // Information about the thumbnail or associated image
+  }
+  
+  export interface KeywordDto {
+    id: number; // Unique identifier for the keyword
+    keyword: string; // The keyword itself
+  }
+  
+  export interface ImageDto {
+    id: number; // Unique identifier for the image
+    documentId: string; // Document ID for the image
+    url: string; // URL of the image
+  }
+  
 
   export interface Category {
     name: string
