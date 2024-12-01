@@ -20,21 +20,6 @@ const BlogPostComponent = ({ blog }: BlogPostComponentProps) => {
 
   return (
     <>
-      {/* Meta Tags */}
-      <Head>
-        <title>{blog.metadata?.title || blog.title}</title>
-        <meta name="description" content={blog.metadata?.description} />
-        <meta name="keywords" content={blog.metadata?.keywords.map((k) => k.keyword).join(", ")} />
-        <meta property="og:title" content={blog.metadata?.title || blog.title} />
-        <meta property="og:description" content={blog.metadata?.description} />
-        <meta property="og:image" content={blog.metadata?.image?.url} />
-        <meta property="og:url" content={`/blog/${blog.slug}`} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={blog.metadata?.title || blog.title} />
-        <meta name="twitter:description" content={blog.metadata?.description} />
-        <meta name="twitter:image" content={blog.metadata?.image?.url} />
-      </Head>
-
       {/* Blog Post */}
       <div className="bg-gradient-to-b from-gray-100 to-gray-200 text-gray-900 min-h-screen">
         <div className="container mx-auto px-4 py-12">
