@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { notFound } from "next/navigation";
-import Head from "next/head";
 import Link from "next/link";
 import { Daum } from "@/api/blog/blog.interface";
 
