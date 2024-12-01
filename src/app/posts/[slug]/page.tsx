@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'; // To handle 404s if the blog is not
 import { remark } from 'remark';
 import html from 'remark-html';
 import BlogPostComponent from '@/app/components/Blog';
+import { Metadata } from 'next';
 
 interface Params{
   slug: string;
@@ -42,4 +43,33 @@ const fetchSingleBlog = async (slug: string) => {
   return blog;
 };
 
+export async function generateMetadata({ params }: { params: Promise<Params>  }): Promise<Metadata> {
+  const { slug } =  await params;
+  const blog = await fetchSingleBlog(slug);
+
+  if (!blog) {
+    return {
+      title: "Blog not found",
+      description: "The requested blog could not be found.",
+    };
+  }
+
+  return {
+    title: blog.metadata?.title || blog.title,
+    description: blog.metadata?.description,
+    keywords: blog.metadata?.keywords?.map((k: { keyword: string }) => k.keyword).join(", "),
+    openGraph: {
+      title: blog.metadata?.title || blog.title,
+      description: blog.metadata?.description,
+      images: blog.metadata?.image?.url ? [{ url: blog.metadata.image.url }] : undefined,
+      url: `/blog/${blog.slug}`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: blog.metadata?.title || blog.title,
+      description: blog.metadata?.description,
+      images: blog.metadata?.image?.url,
+    },
+  };
+}
 export default BlogPost;
