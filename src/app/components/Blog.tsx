@@ -1,7 +1,8 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { FaFacebook, FaTwitter, FaWhatsapp, FaCopy, FaShareAlt } from "react-icons/fa";
 import { Daum } from "@/api/blog/blog.interface";
 
 interface BlogPostComponentProps {
@@ -12,6 +13,15 @@ const BlogPostComponent = ({ blog }: BlogPostComponentProps) => {
   if (!blog) {
     notFound(); // Trigger 404 page
   }
+
+  const [showAlert, setShowAlert] = useState(false);
+  const [showShareOptions, setShowShareOptions] = useState(false);
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setShowAlert(true);
+    setTimeout(() => setShowAlert(false), 3000); // Hide alert after 3 seconds
+  };
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -24,14 +34,19 @@ const BlogPostComponent = ({ blog }: BlogPostComponentProps) => {
         <div className="container mx-auto px-4 py-12">
           <div className="bg-white shadow-xl rounded-lg overflow-hidden">
             {/* Blog Thumbnail */}
-            <div className="relative h-80">
+            <div className="relative h-80 sm:h-[400px]">
               <img
                 src={`${blog?.thumbnail?.url}`}
                 alt={blog.title}
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
-              <h1 className="absolute bottom-4 left-4 text-4xl text-white font-bold">
+              <h1
+                className="absolute bottom-4 left-4 right-4 text-white font-bold text-2xl md:text-4xl lg:text-5xl leading-tight px-4 shadow-2xl"
+                style={{
+                  textShadow: "2px 4px 6px rgba(0, 0, 0, 0.8)", // Custom elevated shadow
+                }}
+              >
                 {blog.title}
               </h1>
             </div>
@@ -50,6 +65,78 @@ const BlogPostComponent = ({ blog }: BlogPostComponentProps) => {
                 className="blog-content text-lg text-gray-700 leading-relaxed space-y-6 overflow-y-auto"
                 dangerouslySetInnerHTML={{ __html: blog.content }}
               />
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-gray-300 my-6"></div>
+
+            {/* Hyvor Talk Comments Section */}
+            <div className="px-6 pb-6">
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                💬 Comments
+              </h2>
+              <hyvor-talk-comments website-id="12217" page-id={`/blog/${blog?.slug}`} />
+            </div>
+
+            {/* Share Section */}
+            <div className="px-6 pb-6 space-y-4">
+              {/* Share Button */}
+              <button
+                onClick={() => setShowShareOptions(!showShareOptions)}
+                className="w-full p-3 bg-blue-600 text-white font-semibold rounded-lg flex items-center justify-center gap-3 hover:bg-blue-700 transition-all"
+                title="Share this post"
+              >
+                <FaShareAlt className="text-xl" />
+                <span>Share this Post</span>
+              </button>
+
+              {/* Social Media Share Options */}
+              {showShareOptions && (
+                <div className="space-y-4 mt-4">
+                  <button
+                    onClick={() =>
+                      window.open(`https://wa.me/?text=${window.location.href}`, "_blank")
+                    }
+                    className="w-full p-3 bg-green-600 text-white font-semibold rounded-lg flex items-center justify-center gap-3 hover:bg-green-700 transition-all"
+                    title="Share on WhatsApp"
+                  >
+                    <FaWhatsapp className="text-xl" />
+                    <span>Share on WhatsApp</span>
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      window.open(`https://twitter.com/intent/tweet?url=${window.location.href}`, "_blank")
+                    }
+                    className="w-full p-3 bg-blue-400 text-white font-semibold rounded-lg flex items-center justify-center gap-3 hover:bg-blue-500 transition-all"
+                    title="Share on Twitter"
+                  >
+                    <FaTwitter className="text-xl" />
+                    <span>Share on Twitter</span>
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      window.open(`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`, "_blank")
+                    }
+                    className="w-full p-3 bg-blue-700 text-white font-semibold rounded-lg flex items-center justify-center gap-3 hover:bg-blue-800 transition-all"
+                    title="Share on Facebook"
+                  >
+                    <FaFacebook className="text-xl" />
+                    <span>Share on Facebook</span>
+                  </button>
+
+                  {/* Copy Link Button */}
+                  <button
+                    onClick={handleCopyLink}
+                    className="w-full p-3 bg-gray-600 text-white font-semibold rounded-lg flex items-center justify-center gap-3 hover:bg-gray-700 transition-all"
+                    title="Copy Link"
+                  >
+                    <FaCopy className="text-xl" />
+                    <span>Copy Link</span>
+                  </button>
+                </div>
+              )}
 
               {/* Back Buttons */}
               <div className="mt-8 space-y-4">
@@ -68,20 +155,22 @@ const BlogPostComponent = ({ blog }: BlogPostComponentProps) => {
                 </div>
               </div>
             </div>
-
-            {/* Divider */}
-            <div className="border-t border-gray-300 my-6"></div>
-
-            {/* Hyvor Talk Comments Section */}
-            <div className="px-6 pb-6">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                💬 Comments
-              </h2>
-              <hyvor-talk-comments website-id="12217" page-id={`/blog/${blog?.slug}`} />
-            </div>
           </div>
         </div>
       </div>
+
+      {/* Copy Link Alert */}
+      {showAlert && (
+        <div className="fixed top-10 left-1/2 transform -translate-x-1/2 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50 flex items-center justify-between">
+          <span>Link copied to clipboard!</span>
+          <button
+            onClick={() => setShowAlert(false)}
+            className="text-white font-bold ml-2"
+          >
+            &#10005;
+          </button>
+        </div>
+      )}
     </>
   );
 };
