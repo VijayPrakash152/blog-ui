@@ -4,6 +4,7 @@ interface Window {
     ReactNativeWebView?: {
       postMessage: (message: string) => void;
     };
+    gtag: (...args: any[]) => void;
     webkit?: {
       messageHandlers?: {
         nativeHandler?: {
