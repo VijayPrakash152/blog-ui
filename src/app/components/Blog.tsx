@@ -107,7 +107,7 @@ const BlogPostComponent = ({ blog }: BlogPostComponentProps) => {
                     onClick={() =>
                       window.open(
                         `https://wa.me/?text=${encodeURIComponent(
-                          window.location.href
+                          `Check out this blog: ${blog.title} - ${window.location.href}`
                         )}`,
                         "_blank"
                       )
