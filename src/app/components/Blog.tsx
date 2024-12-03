@@ -2,7 +2,13 @@
 import React, { useState } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { FaFacebook, FaTwitter, FaWhatsapp, FaCopy, FaShareAlt } from "react-icons/fa";
+import {
+  FaFacebook,
+  FaTwitter,
+  FaWhatsapp,
+  FaCopy,
+  FaShareAlt,
+} from "react-icons/fa";
 import { Daum } from "@/api/blog/blog.interface";
 
 interface BlogPostComponentProps {
@@ -75,7 +81,10 @@ const BlogPostComponent = ({ blog }: BlogPostComponentProps) => {
               <h2 className="text-2xl font-semibold text-gray-800 mb-4">
                 💬 Comments
               </h2>
-              <hyvor-talk-comments website-id="12217" page-id={`/blog/${blog?.slug}`} />
+              <hyvor-talk-comments
+                website-id="12217"
+                page-id={`/blog/${blog?.slug}`}
+              />
             </div>
 
             {/* Share Section */}
@@ -93,9 +102,15 @@ const BlogPostComponent = ({ blog }: BlogPostComponentProps) => {
               {/* Social Media Share Options */}
               {showShareOptions && (
                 <div className="space-y-4 mt-4">
+                  {/* WhatsApp Share Button */}
                   <button
                     onClick={() =>
-                      window.open(`https://wa.me/?text=${window.location.href}`, "_blank")
+                      window.open(
+                        `https://wa.me/?text=${encodeURIComponent(
+                          window.location.href
+                        )}`,
+                        "_blank"
+                      )
                     }
                     className="w-full p-3 bg-green-600 text-white font-semibold rounded-lg flex items-center justify-center gap-3 hover:bg-green-700 transition-all"
                     title="Share on WhatsApp"
@@ -104,9 +119,15 @@ const BlogPostComponent = ({ blog }: BlogPostComponentProps) => {
                     <span>Share on WhatsApp</span>
                   </button>
 
+                  {/* Twitter Share Button */}
                   <button
                     onClick={() =>
-                      window.open(`https://twitter.com/intent/tweet?url=${window.location.href}`, "_blank")
+                      window.open(
+                        `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                          window.location.href
+                        )}&text=${encodeURIComponent(blog.title)}`,
+                        "_blank"
+                      )
                     }
                     className="w-full p-3 bg-blue-400 text-white font-semibold rounded-lg flex items-center justify-center gap-3 hover:bg-blue-500 transition-all"
                     title="Share on Twitter"
@@ -115,9 +136,15 @@ const BlogPostComponent = ({ blog }: BlogPostComponentProps) => {
                     <span>Share on Twitter</span>
                   </button>
 
+                  {/* Facebook Share Button */}
                   <button
                     onClick={() =>
-                      window.open(`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`, "_blank")
+                      window.open(
+                        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                          window.location.href
+                        )}`,
+                        "_blank"
+                      )
                     }
                     className="w-full p-3 bg-blue-700 text-white font-semibold rounded-lg flex items-center justify-center gap-3 hover:bg-blue-800 transition-all"
                     title="Share on Facebook"
