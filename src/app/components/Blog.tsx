@@ -76,17 +76,6 @@ const BlogPostComponent = ({ blog }: BlogPostComponentProps) => {
             {/* Divider */}
             <div className="border-t border-gray-300 my-6"></div>
 
-            {/* Hyvor Talk Comments Section */}
-            <div className="px-6 pb-6">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                💬 Comments
-              </h2>
-              <hyvor-talk-comments
-                website-id="12217"
-                page-id={`/blog/${blog?.slug}`}
-              />
-            </div>
-
             {/* Share Section */}
             <div className="px-6 pb-6 space-y-4">
               {/* Share Button */}

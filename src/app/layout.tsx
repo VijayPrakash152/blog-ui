@@ -69,9 +69,6 @@ export default function RootLayout({
           }}
         />
 
-        {/* Hyvor Talk Embed Script */}
-        <script async src="https://talk.hyvor.com/embed/embed.js" type="module"></script>
-
         {/* Meta Description */}
         <meta
           name="description"
