@@ -75,7 +75,7 @@ const Header = () => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-gray-800 text-white p-6 w-full fixed top-17 left-0 z-50 transition-all duration-300 ease-in-out">
+        <div className="md:hidden bg-gray-800 bg-opacity-80 text-white p-6 w-full absolute z-50 transition-all duration-300 ease-in-out">
           <div className="flex flex-col items-center space-y-6">
             <Link
               href="/profile"
