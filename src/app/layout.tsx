@@ -74,6 +74,7 @@ export default function RootLayout({
           name="description"
           content="Welcome to Vijay's Blog - A place to explore thoughts, experiences, and insights."
         />
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
