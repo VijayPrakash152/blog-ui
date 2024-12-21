@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { DiscussionEmbed } from 'disqus-react';
 
 import {
   FaFacebook,
@@ -76,22 +75,7 @@ const BlogPostComponent = ({ blog }: BlogPostComponentProps) => {
             </div>
 
             {/* Divider */}
-            {/* <div className="border-t border-gray-300 my-6"></div> */}
-
-            {/* Disqus Comments Section */}
-          <div className="p-6 bg-gray-50 border-t border-gray-200">
-            <h3 className="text-lg font-semibold mb-4">Join the Discussion</h3>
-            <div className="max-w-full mx-auto">
-              <DiscussionEmbed
-                shortname="vijayprakash-co-in"
-                config={{
-                  url: `${process.env.NEXT_PUBLIC_APP_URL}/posts/${blog?.slug}`,
-                  identifier: blog?.id?.toString(),
-                  title: blog?.title,
-                }}
-              />
-            </div>
-          </div>
+            <div className="border-t border-gray-300 my-6"></div>
 
             {/* Share Section */}
             <div className="px-6 pb-6 space-y-4">
