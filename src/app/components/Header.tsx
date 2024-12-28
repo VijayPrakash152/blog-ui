@@ -28,7 +28,7 @@ const Header = () => {
             <Link href="/" className="hover:text-indigo-400">
               Posts
             </Link>
-            <Link href="/" className="hover:text-indigo-400">
+            <Link href="/categories" className="hover:text-indigo-400">
               Categories
             </Link>
           </div>
@@ -92,7 +92,7 @@ const Header = () => {
               Posts
             </Link>
             <Link
-              href="/"
+              href="/categories"
               className="text-xl font-semibold py-2 px-4 rounded-lg hover:bg-indigo-600 transition-all duration-300"
               onClick={() => setIsMenuOpen(false)}
             >
