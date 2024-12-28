@@ -1,7 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 import {
   FaFacebook,
@@ -23,6 +25,124 @@ const BlogPostComponent = ({ blog }: BlogPostComponentProps) => {
 
   const [showAlert, setShowAlert] = useState(false);
   const [showShareOptions, setShowShareOptions] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  // const downloadPDF = async () => {
+  //   if (contentRef.current) {
+  //     const content = contentRef.current;
+  //     const doc = new jsPDF({
+  //       orientation: 'portrait',
+  //       unit: 'px',
+  //       format: [window.innerWidth, window.innerHeight]
+  //     });
+  
+  //     // Capture the content using html2canvas with a lower resolution for better performance
+  //     const canvas = await html2canvas(content, {
+  //       scale: 1.5, // Lower scale to reduce image resolution
+  //       logging: false, // Disable logging
+  //       useCORS: true // Handle CORS for external images
+  //     });
+  
+  //     let imgData = canvas.toDataURL("image/jpeg", 0.75); // Convert to JPEG with 75% quality
+  
+  //     const contentWidth = canvas.width;
+  //     const contentHeight = canvas.height;
+  
+  //     const pdfWidth = doc.internal.pageSize.getWidth();
+  //     const pdfHeight = doc.internal.pageSize.getHeight();
+  
+  //     const scaleFactor = pdfWidth / contentWidth; // Scale factor based on width
+  //     const imgScaledWidth = pdfWidth; // Full width
+  //     const imgScaledHeight = contentHeight * scaleFactor; // Maintain aspect ratio for height
+  
+  //     // Add the first image to the first page
+  //     doc.addImage(imgData, "JPEG", 0, 0, imgScaledWidth, imgScaledHeight);
+  
+  //     let offsetY = imgScaledHeight;
+  
+  //     // Handle overflow to multiple pages, ensuring correct order
+  //     while (offsetY > pdfHeight) {
+  //       doc.addPage(); // Add new page
+  //       // Add the remaining content (offsetY is subtracted to show next part)
+  //       doc.addImage(imgData, "JPEG", 0, -offsetY + pdfHeight, imgScaledWidth, imgScaledHeight);
+  //       offsetY -= pdfHeight; // Subtract the page height for the remaining content
+  //     }
+  
+  //     // Save the PDF
+  //     doc.save("download.pdf");
+  //   }
+  // };
+  
+  const downloadPDF = async () => {
+    if (contentRef.current) {
+        const content = contentRef.current;
+        const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'px',
+            format: [window.innerWidth, window.innerHeight],
+        });
+
+        // Capture the content using html2canvas with a resolution that's balanced for performance
+        const canvas = await html2canvas(content, {
+            scale: 1.5,  // Adjust resolution to balance performance and image quality
+            logging: false,  // Disable logs for a cleaner process
+            useCORS: true,  // Handle external resources (images) with CORS enabled
+        });
+
+        let imgData = canvas.toDataURL("image/jpeg", 0.75); // Compress image to 75% quality for smaller file size
+
+        const contentWidth = canvas.width;
+        const contentHeight = canvas.height;
+
+        const pdfWidth = doc.internal.pageSize.getWidth();
+        const pdfHeight = doc.internal.pageSize.getHeight();
+
+        const scaleFactor = pdfWidth / contentWidth;  // Determine the scale factor to fit the content width
+        const imgScaledWidth = pdfWidth;  // Set the image width to match the PDF width
+        const imgScaledHeight = contentHeight * scaleFactor;  // Adjust height based on scale factor
+
+        let offsetY = 0;
+
+        // Add first page with content
+        doc.addImage(imgData, "JPEG", 0, 0, imgScaledWidth, imgScaledHeight);
+        offsetY = imgScaledHeight; // Set the offset to the height of the first page
+
+        // Handle content overflow and add new pages as needed
+        while (offsetY < contentHeight) {
+            doc.addPage(); // Add a new page for the next portion of content
+            const yPosition = -offsetY + pdfHeight;  // Position the content correctly on the new page
+            doc.addImage(imgData, "JPEG", 0, yPosition, imgScaledWidth, imgScaledHeight);
+            offsetY += pdfHeight; // Move the offset down by the height of a page
+        }
+
+        // Save the PDF with the filename "download.pdf"
+        doc.save("download.pdf");
+    }
+};
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -37,8 +157,8 @@ const BlogPostComponent = ({ blog }: BlogPostComponentProps) => {
   return (
     <>
       {/* Blog Post */}
-      <div className="bg-gradient-to-b from-gray-100 to-gray-200 text-gray-900 min-h-screen">
-        <div className="container mx-auto px-4 py-12">
+      <div ref={contentRef}  className="bg-gradient-to-b from-gray-100 to-gray-200 text-gray-900 min-h-screen">
+        <div  className="container mx-auto px-4 py-12">
           <div className="bg-white shadow-xl rounded-lg overflow-hidden">
             {/* Blog Thumbnail */}
             <div className="relative h-80 sm:h-[400px]">
@@ -175,7 +295,7 @@ const BlogPostComponent = ({ blog }: BlogPostComponentProps) => {
           </div>
         </div>
       </div>
-
+      <button onClick={downloadPDF}>Download as PDF</button>
       {/* Copy Link Alert */}
       {showAlert && (
         <div className="fixed top-10 left-1/2 transform -translate-x-1/2 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50 flex items-center justify-between">
