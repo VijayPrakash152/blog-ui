@@ -73,6 +73,26 @@ const BlogPostComponent = ({ blog }: BlogPostComponentProps) => {
                 dangerouslySetInnerHTML={{ __html: blog.content }}
               />
             </div>
+            {/* Demo App Video Section */}
+            {blog.demoAppVideoEmbedUrl && (
+              <div className="p-6 space-y-6 mt-12 bg-gray-900 text-white rounded-lg shadow-lg">
+                <h2 className="text-4xl font-extrabold text-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent bg-clip-text py-4">
+                  🌟 Small Demo App to Get an Idea! 🎥
+                </h2>
+                <div className="flex justify-center">
+                  <video
+                    width="100%"
+                    height="500"
+                    controls
+                    src={blog.demoAppVideoEmbedUrl}
+                    title="Demo App Video"
+                    className="rounded-lg shadow-xl"
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              </div>
+            )}
 
             {/* Divider */}
             <div className="border-t border-gray-300 my-6"></div>

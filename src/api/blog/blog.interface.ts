@@ -20,6 +20,7 @@ export interface FetchBlogsParams {
     thumbnail: Thumbnail
     category: Category
     metadata: MetadataDto
+    demoAppVideoEmbedUrl: string
   }
 
   export interface MetadataDto {
