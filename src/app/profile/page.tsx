@@ -8,7 +8,7 @@ import html from "remark-html";
 // Fetch profile data
 const fetchProfileData = async () => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile`, {
-    cache: "no-store",
+    next: { revalidate: 86400 },
   });
 
   if (!res.ok) {

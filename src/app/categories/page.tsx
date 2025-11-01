@@ -4,7 +4,7 @@ const Categories = async () => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/categories?populate[image][fields][0]=url`,
     {
-      cache: 'no-store',
+      next: { revalidate: 86400 },
     }
   );
   const data = await response.json();

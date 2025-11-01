@@ -29,7 +29,7 @@ const BlogPost = async ({ params }: { params: Promise<Params> }) => {
 
 // Fetch the blog based on slug
 const fetchSingleBlog = async (slug: string) => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/blogs?filters[slug][$eq]=${slug}&populate[thumbnail][fields][0]=url&populate[category]=true&populate[metadata][populate][keywords]=true&populate[metadata][populate][image][fields][0]=url`,{"cache": "no-store"});
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/blogs?filters[slug][$eq]=${slug}&populate[thumbnail][fields][0]=url&populate[category]=true&populate[metadata][populate][keywords]=true&populate[metadata][populate][image][fields][0]=url`,{next: { revalidate: 86400 }});
 
   if (!res.ok) {
     throw new Error('Failed to fetch blog data');

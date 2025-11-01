@@ -12,7 +12,7 @@ const Home = async () => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/blogs?pagination[page]=1&pagination[pageSize]=6&populate[thumbnail][fields][0]=url&populate[category]=true`,
     {
-      cache: 'no-store',
+      next: { revalidate: 86400 },
     }
   );
   const posts = await response.json();
