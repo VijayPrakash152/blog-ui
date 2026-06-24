@@ -72,5 +72,114 @@ html {
   margin: 0 auto;
 }
 
+.article-body {
+  color: #e2e8f0;
+  font-size: 1.05rem;
+  line-height: 1.85;
+}
+
+.article-body h2,
+.article-body h3,
+.article-body h4 {
+  color: #f8fafc;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.article-body p,
+.article-body li,
+.article-body blockquote {
+  margin-top: 1.35rem;
+}
+
+.article-body ul,
+.article-body ol {
+  padding-left: 1.5rem;
+  list-style-position: inside;
+}
+
+.article-body a {
+  color: #7c61ff;
+  text-decoration: none;
+}
+
+.article-body a:hover {
+  text-decoration: underline;
+}
+
+.article-body blockquote {
+  border-left: 3px solid rgba(124, 97, 255, 0.6);
+  background: rgba(124, 97, 255, 0.08);
+  padding: 1.3rem 1.4rem;
+  margin: 1.75rem 0;
+}
+
+.article-body pre {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.5rem;
+  margin: 1.5rem 0;
+  overflow: auto;
+  padding: 1.5rem;
+}
+
+.article-body pre code {
+  display: block;
+  white-space: pre;
+  color: #e2e8f0;
+}
+
+.article-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+}
+
+.article-body th,
+.article-body td {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1rem;
+}
+
+.article-body th {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.article-body img {
+  border-radius: 1.5rem;
+  max-width: 100%;
+  margin: 1.5rem 0;
+}
+
+.article-code-wrapper {
+  position: relative;
+  margin: 1.5rem 0;
+}
+
+.copy-code-button {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  z-index: 10;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.95);
+  color: #e2e8f0;
+  cursor: pointer;
+  font-size: 0.775rem;
+  font-weight: 600;
+  padding: 0.55rem 0.95rem;
+  transition: background 200ms ease;
+}
+
+.copy-code-button:hover {
+  background: rgba(124, 97, 255, 0.95);
+}
+
+.copy-code-success {
+  background: #16a34a !important;
+}
+
 
 

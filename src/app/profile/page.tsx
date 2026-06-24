@@ -1,11 +1,10 @@
-// pages/about-me.js
 import { notFound } from "next/navigation";
-import React from "react";
-import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
+import { ExternalLink } from "lucide-react";
 import { remark } from "remark";
 import html from "remark-html";
+import { Container } from "@/components/ui/container";
+import { SectionHeader } from "@/components/ui/section-header";
 
-// Fetch profile data
 const fetchProfileData = async () => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile`, {
     next: { revalidate: 86400 },
@@ -16,7 +15,7 @@ const fetchProfileData = async () => {
   }
 
   const data = await res.json();
-  const profile = data?.data; // Assuming API returns a single profile object
+  const profile = data?.data;
 
   if (profile?.content) {
     const processedContent = await remark().use(html).process(profile.content);
@@ -25,7 +24,6 @@ const fetchProfileData = async () => {
   return profile;
 };
 
-// Metadata generation for dynamic profile data
 export async function generateMetadata() {
   const profile = await fetchProfileData();
 
@@ -39,7 +37,7 @@ export async function generateMetadata() {
 
   return {
     title: `About ${name} - Software Engineer | Lifelong Learner`,
-    description: description,
+    description,
     keywords: [
       "Vijay Prakash",
       "Software Engineer",
@@ -54,7 +52,7 @@ export async function generateMetadata() {
       type: "website",
       url: "https://vijayprakash.co.in/profile",
       title: `About ${name} - Software Engineer | Lifelong Learner`,
-      description: description,
+      description,
       images: [
         {
           url: "https://vijayprakash.co.in/profile-picture.jpg",
@@ -68,81 +66,53 @@ export async function generateMetadata() {
       card: "summary_large_image",
       url: "https://vijayprakash.co.in/profile",
       title: `About ${name} - Software Engineer | Lifelong Learner`,
-      description: description,
+      description,
       image: "https://vijayprakash.co.in/profile-picture.jpg",
     },
   };
 }
 
-// Main AboutMe component
 const AboutMe = async () => {
   const profile = await fetchProfileData();
 
-  // If the profile data is not found, show a 404 page
   if (!profile) {
-    notFound(); // This triggers the Next.js 404 page
+    notFound();
   }
 
   return (
-    <div className="bg-gray-900 min-h-screen flex flex-col items-center text-white">
-      {/* Profile Section */}
-      <section className="relative text-white w-full py-12 px-6">
-        <div className="container mx-auto text-center">
-          <div className="bg-gray-800 p-8 rounded-4 shadow-lg">
+    <div className="bg-[#05070B] min-h-screen text-white">
+      <section className="border-b border-white/10 py-16">
+        <Container className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div className="rounded-[2rem] border border-white/10 bg-[#0B1220] p-8 shadow-lg shadow-black/20">
             <img
               src="/profile-picture.jpg"
               alt="Vijay Prakash"
-              className="w-32 h-32 rounded-full mx-auto mb-4 shadow-lg transform transition-transform duration-300 hover:scale-105"
+              className="mx-auto mb-6 h-36 w-36 rounded-full object-cover shadow-xl"
             />
-            <h1 className="text-3xl font-semibold mb-1">Vijay Prakash</h1>
-            <p className="text-lg mb-4 text-gray-400">
-              Software Engineer 🚀 | Lifelong Learner
-            </p>
-
-            {/* Social Media Links */}
-            <div className="flex justify-center gap-6 mb-6">
-              <a
-                href="https://github.com/VijayPrakash152"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-200 hover:text-white transform transition-all duration-300 hover:scale-110"
-              >
-                <FaGithub size={28} />
+            <h1 className="text-3xl font-semibold text-white">Vijay Prakash</h1>
+            <p className="mt-3 text-lg text-slate-300">Software Engineer 🚀 | Lifelong Learner</p>
+            <div className="mt-8 flex items-center justify-center gap-4 md:justify-start">
+              <a href="https://github.com/VijayPrakash152" target="_blank" rel="noopener noreferrer" className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-200 transition hover:border-[#7C61FF] hover:text-white">
+                <ExternalLink className="h-5 w-5" />
               </a>
-              <a
-                href="https://www.linkedin.com/in/me-vijay-prakash"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-400 hover:text-white transform transition-all duration-300 hover:scale-110"
-              >
-                <FaLinkedin size={28} />
+              <a href="https://www.linkedin.com/in/me-vijay-prakash" target="_blank" rel="noopener noreferrer" className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-200 transition hover:border-[#7C61FF] hover:text-white">
+                <ExternalLink className="h-5 w-5" />
               </a>
-              <a
-                href="https://x.com/VijayPr4788148"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:text-white transform transition-all duration-300 hover:scale-110"
-              >
-                <FaTwitter size={28} />
+              <a href="https://x.com/VijayPr4788148" target="_blank" rel="noopener noreferrer" className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-200 transition hover:border-[#7C61FF] hover:text-white">
+                <ExternalLink className="h-5 w-5" />
               </a>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* About Me Section */}
-      <section className="relative flex-grow w-full about-me-section">
-        <div className="bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-4 h-full overflow-y-auto shadow-inner">
-          <div className="container mx-auto max-w-3xl bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-semibold mb-4 text-gray-800">
-              About Me
-            </h2>
-            <div
-              className="text-gray-700 text-sm leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: profile.content }}
+          <div className="rounded-[2rem] border border-white/10 bg-[#0B1220] p-8 shadow-lg shadow-black/20">
+            <SectionHeader
+              label="About"
+              title="A few words about my journey and what I build."
+              description="This page highlights the motivations, experience, and focus areas behind the blog and engineering work."
             />
+            <div className="prose prose-invert mt-6 max-w-none text-slate-300" dangerouslySetInnerHTML={{ __html: profile.content }} />
           </div>
-        </div>
+        </Container>
       </section>
     </div>
   );

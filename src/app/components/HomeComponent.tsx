@@ -1,74 +1,80 @@
 "use client";
-import React from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import Hero from "./Hero";
+import FeaturedPosts from "./FeaturedPosts";
+import CategorySection from "./CategorySection";
+import NewsletterCTA from "./NewsletterCTA";
+import { Daum } from "@/api/blog/blog.interface";
+import { SectionHeader } from "@/components/ui/section-header";
+import { Card } from "@/components/ui/card";
 
 interface HomeComponentProps {
-  data: { id: string; title: string; category: { name: string }; contentHtml: string; thumbnail: { url: string }; slug: string }[];
+  data: Array<Daum & { contentHtml: string }>;
 }
 
 const HomeComponent = ({ data }: HomeComponentProps) => {
-  return (
-    <div className="bg-gray-50 text-gray-900">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white pt-16 pb-24">
-        <div className="container mx-auto text-center">
-          <h1 className="text-5xl font-semibold tracking-tight mb-4">
-            Welcome to My Blog
-          </h1>
-          <p className="text-xl max-w-2xl mx-auto mb-6">
-            A place to explore my thoughts, experiences, and insights on
-            technology, life, and everything in between.
-          </p>
-          <a href="#latest-posts">
-            <button className="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-full shadow-lg transform transition-all hover:scale-105">
-              Read Latest Posts
-            </button>
-          </a>
-        </div>
-      </section>
+  const featuredPosts = data.slice(0, 3);
+  const latestPosts = data.slice(3);
+  const categories = Array.from(
+    new Set(data.map((post) => post.category?.name || "Uncategorized"))
+  );
 
-      {/* Blog Posts Section */}
-      <section className="py-16 bg-white" id="latest-posts">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-semibold text-center mb-12">
-            Latest Posts
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-            {data ? (
-              data.map((blog) => (
-                <div
-                  key={blog.id}
-                  className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transform transition-all hover:scale-105"
-                >
-                  <img
-                    src={blog.thumbnail.url}
-                    alt={blog.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="p-6">
-                    <h3 className="text-xl font-semibold mb-4">{blog.title}</h3>
-                    <button className="text-indigo-500 border-2 border-indigo-600 py-1 mb-2 px-2 rounded-lg font-semibold hover:bg-indigo-600 hover:text-white transition-all duration-300">
-                      {blog.category?.name || "Uncategorized"}
-                    </button>
-                    {/* Render Preprocessed HTML */}
-                    <div
-                      className="text-gray-600 mb-4"
-                      dangerouslySetInnerHTML={{ __html: blog.contentHtml }}
-                    />
-                    <Link href={`/posts/${blog.slug}`}>
-                      <button className="text-indigo-600 hover:text-indigo-800 font-semibold">
-                        Read More &rarr;
-                      </button>
-                    </Link>
-                  </div>
+  return (
+    <div className="bg-[#05070B] text-white">
+      <Hero postCount={data.length} categoryCount={categories.length} />
+      <FeaturedPosts posts={featuredPosts} />
+      <CategorySection categories={categories} />
+
+      <section className="bg-[#0A0F18] px-6 py-16 sm:px-10 lg:px-16">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeader
+            label="Latest articles"
+            title="Recent writing, updated for modern systems teams."
+            description="The freshest posts from the blog, focused on architecture, systems, and product engineering."
+          />
+
+          <div className="mt-10 grid gap-6 lg:grid-cols-3">
+            {latestPosts.map((post, index) => (
+              <Card
+                as={motion.article}
+                key={post.id}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.06 }}
+                className="p-6"
+                hoverable
+              >
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.24em] text-slate-200">
+                  {post.category?.name || "Uncategorized"}
                 </div>
-              ))
-            ) : (
-              <p>Loading...</p>
-            )}
+                <h3 className="text-2xl font-semibold text-white transition group-hover:text-[#7C61FF]">
+                  {post.title}
+                </h3>
+                <p className="mt-4 min-h-[4.5rem] text-sm leading-7 text-slate-300">
+                  {post.contentHtml.replace(/<[^>]+>/g, "")}
+                </p>
+                <div className="mt-8 flex items-center justify-between gap-4">
+                  <Link
+                    href={`/posts/${post.slug}`}
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-[#7C61FF] transition hover:text-white"
+                  >
+                    Read article
+                  </Link>
+                  <span className="text-xs uppercase tracking-[0.22em] text-slate-500">
+                    {new Date(post.publishedAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
+
+      <NewsletterCTA />
     </div>
   );
 };

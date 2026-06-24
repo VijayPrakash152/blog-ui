@@ -1,214 +1,153 @@
 "use client";
-import React, { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-
-import {
-  FaFacebook,
-  FaTwitter,
-  FaWhatsapp,
-  FaCopy,
-  FaShareAlt,
-} from "react-icons/fa";
+import { Calendar, ChevronLeft, Clock, Tag as TagIcon } from "lucide-react";
+import { ArticleTOC, TocItem } from "./ArticleTOC";
+import ArticleContent from "./ArticleContent";
+import ReadingProgress from "./ReadingProgress";
+import AuthorCard from "./AuthorCard";
+import RelatedArticles from "./RelatedArticles";
+import { ShareButtons } from "./ShareButtons";
 import { Daum } from "@/api/blog/blog.interface";
+import { SectionHeader } from "@/components/ui/section-header";
+import { Card } from "@/components/ui/card";
 
 interface BlogPostComponentProps {
   blog: Daum;
+  relatedPosts?: Daum[];
 }
 
-const BlogPostComponent = ({ blog }: BlogPostComponentProps) => {
+const BlogPostComponent = ({ blog, relatedPosts }: BlogPostComponentProps) => {
   if (!blog) {
-    notFound(); // Trigger 404 page
+    notFound();
   }
 
-  const [showAlert, setShowAlert] = useState(false);
-  const [showShareOptions, setShowShareOptions] = useState(false);
+  const [headings, setHeadings] = useState<TocItem[]>([]);
+  const [activeId, setActiveId] = useState("");
+  const [progress, setProgress] = useState(0);
+  const related = relatedPosts ?? [];
 
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
-    setShowAlert(true);
-    setTimeout(() => setShowAlert(false), 3000); // Hide alert after 3 seconds
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      const content = document.getElementById("article-content-root");
+      if (!content) return;
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+      const articleTop = content.getBoundingClientRect().top + window.scrollY;
+      const articleHeight = content.offsetHeight;
+      const position = window.scrollY - articleTop + window.innerHeight * 0.15;
+      const progressValue = (position / (articleHeight - window.innerHeight * 0.15)) * 100;
+      setProgress(Math.min(100, Math.max(0, progressValue)));
+
+      const currentHeading = headings.reduce<string>((current, heading) => {
+        const element = document.getElementById(heading.id);
+        if (!element) return current;
+        if (window.scrollY + 140 >= element.offsetTop) {
+          return heading.id;
+        }
+        return current;
+      }, headings[0]?.id ?? "");
+
+      setActiveId(currentHeading);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [headings]);
+
+  const summary = useMemo(() => {
+    const raw = blog.metadata?.description || blog.content.replace(/<[^>]+>/g, "");
+    return raw.slice(0, 180).trim();
+  }, [blog.metadata?.description, blog.content]);
 
   return (
-    <>
-      {/* Blog Post */}
-      <div className="bg-gradient-to-b from-gray-100 to-gray-200 text-gray-900 min-h-screen">
-        <div className="container mx-auto px-4 py-12">
-          <div className="bg-white shadow-xl rounded-lg overflow-hidden">
-            {/* Blog Thumbnail */}
-            <div className="relative h-80 sm:h-[400px]">
-              <img
-                src={`${blog?.thumbnail?.url}`}
-                alt={blog.title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
-              <h1
-                className="absolute bottom-4 left-4 right-4 text-white font-bold text-2xl md:text-4xl lg:text-5xl leading-tight px-4 shadow-2xl"
-                style={{
-                  textShadow: "2px 4px 6px rgba(0, 0, 0, 0.8)", // Custom elevated shadow
-                }}
-              >
+    <article className="relative bg-[#05070B] text-white">
+      <ReadingProgress progress={progress} />
+
+      <section className="relative overflow-hidden border-b border-white/10 bg-[#090B10]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(124,97,255,0.16),transparent_35%)]" />
+        <div className="relative mx-auto max-w-7xl px-6 py-16 sm:px-10 lg:px-20">
+          <div className="flex flex-col gap-8">
+            <Link href="/" className="inline-flex items-center gap-2 text-sm text-slate-400 transition hover:text-white">
+              <ChevronLeft className="h-4 w-4" />
+              Back to posts
+            </Link>
+
+            <div className="max-w-3xl space-y-6">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.3em] text-slate-200">
+                <TagIcon className="h-4 w-4 text-[#7C61FF]" />
+                {blog.category?.name || "Uncategorized"}
+              </div>
+              <h1 className="text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
                 {blog.title}
               </h1>
-            </div>
-
-            {/* Blog Content */}
-            <div className="p-6">
-              {/* Category */}
-              <div className="mb-4">
-                <span className="inline-block bg-indigo-100 text-indigo-600 py-1 px-3 rounded-full text-sm font-medium">
-                  {blog.category?.name || "Uncategorized"}
+              <p className="max-w-2xl text-lg leading-8 text-slate-300">{summary}</p>
+              <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400">
+                <span className="inline-flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  {new Date(blog.publishedAt).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
                 </span>
-              </div>
-
-              {/* Blog Body */}
-              <div
-                className="blog-content text-lg text-gray-700 leading-relaxed space-y-6 overflow-y-auto"
-                dangerouslySetInnerHTML={{ __html: blog.content }}
-              />
-            </div>
-            {/* Demo App Video Section */}
-            {blog.demoAppVideoEmbedUrl && (
-              <div className="p-6 space-y-6 mt-12 bg-gray-900 text-white rounded-lg shadow-lg">
-                <h2 className="text-4xl font-extrabold text-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent bg-clip-text py-4">
-                  🌟 Small Demo App to Get an Idea! 🎥
-                </h2>
-                <div className="flex justify-center">
-                  <video
-                    width="100%"
-                    height="500"
-                    controls
-                    src={blog.demoAppVideoEmbedUrl}
-                    title="Demo App Video"
-                    className="rounded-lg shadow-xl"
-                  >
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-              </div>
-            )}
-
-            {/* Divider */}
-            <div className="border-t border-gray-300 my-6"></div>
-
-            {/* Share Section */}
-            <div className="px-6 pb-6 space-y-4">
-              {/* Share Button */}
-              <button
-                onClick={() => setShowShareOptions(!showShareOptions)}
-                className="w-full p-3 bg-blue-600 text-white font-semibold rounded-lg flex items-center justify-center gap-3 hover:bg-blue-700 transition-all"
-                title="Share this post"
-              >
-                <FaShareAlt className="text-xl" />
-                <span>Share this Post</span>
-              </button>
-
-              {/* Social Media Share Options */}
-              {showShareOptions && (
-                <div className="space-y-4 mt-4">
-                  {/* WhatsApp Share Button */}
-                  <button
-                    onClick={() =>
-                      window.open(
-                        `https://wa.me/?text=${encodeURIComponent(
-                          `Check out this blog: ${blog.title} - ${window.location.href}`
-                        )}`,
-                        "_blank"
-                      )
-                    }
-                    className="w-full p-3 bg-green-600 text-white font-semibold rounded-lg flex items-center justify-center gap-3 hover:bg-green-700 transition-all"
-                    title="Share on WhatsApp"
-                  >
-                    <FaWhatsapp className="text-xl" />
-                    <span>Share on WhatsApp</span>
-                  </button>
-
-                  {/* Twitter Share Button */}
-                  <button
-                    onClick={() =>
-                      window.open(
-                        `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-                          window.location.href
-                        )}&text=${encodeURIComponent(blog.title)}`,
-                        "_blank"
-                      )
-                    }
-                    className="w-full p-3 bg-blue-400 text-white font-semibold rounded-lg flex items-center justify-center gap-3 hover:bg-blue-500 transition-all"
-                    title="Share on Twitter"
-                  >
-                    <FaTwitter className="text-xl" />
-                    <span>Share on Twitter</span>
-                  </button>
-
-                  {/* Facebook Share Button */}
-                  <button
-                    onClick={() =>
-                      window.open(
-                        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-                          window.location.href
-                        )}`,
-                        "_blank"
-                      )
-                    }
-                    className="w-full p-3 bg-blue-700 text-white font-semibold rounded-lg flex items-center justify-center gap-3 hover:bg-blue-800 transition-all"
-                    title="Share on Facebook"
-                  >
-                    <FaFacebook className="text-xl" />
-                    <span>Share on Facebook</span>
-                  </button>
-
-                  {/* Copy Link Button */}
-                  <button
-                    onClick={handleCopyLink}
-                    className="w-full p-3 bg-gray-600 text-white font-semibold rounded-lg flex items-center justify-center gap-3 hover:bg-gray-700 transition-all"
-                    title="Copy Link"
-                  >
-                    <FaCopy className="text-xl" />
-                    <span>Copy Link</span>
-                  </button>
-                </div>
-              )}
-
-              {/* Back Buttons */}
-              <div className="mt-8 space-y-4">
-                <div className="flex flex-col space-y-4 w-full">
-                  <Link href="/">
-                    <button className="w-full px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-purple-600 hover:to-indigo-500 text-white font-semibold rounded-lg transition-all duration-300 shadow-lg">
-                      ⬅ Back to Posts
-                    </button>
-                  </Link>
-                  <button
-                    onClick={scrollToTop}
-                    className="w-full px-6 py-3 bg-gradient-to-r from-green-500 to-teal-600 hover:from-teal-600 hover:to-green-500 text-white font-semibold rounded-lg transition-all duration-300 shadow-lg"
-                  >
-                    ⬆️ Back to Top
-                  </button>
-                </div>
+                <span className="inline-flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  8 min read
+                </span>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Copy Link Alert */}
-      {showAlert && (
-        <div className="fixed top-10 left-1/2 transform -translate-x-1/2 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50 flex items-center justify-between">
-          <span>Link copied to clipboard!</span>
-          <button
-            onClick={() => setShowAlert(false)}
-            className="text-white font-bold ml-2"
-          >
-            &#10005;
-          </button>
+      <section className="relative mx-auto max-w-7xl px-6 py-16 sm:px-10 lg:px-20">
+        <div className="grid gap-12 xl:grid-cols-[1.8fr_0.9fr] xl:items-start">
+          <div className="space-y-12">
+            <Card className="rounded-[2rem] border border-white/10 bg-[#0B1220] p-8 shadow-lg shadow-black/20">
+              <ArticleContent html={blog.content} onHeadingsChange={setHeadings} />
+            </Card>
+
+            <div className="grid gap-8 lg:grid-cols-[1fr_0.45fr]">
+              <Card className="rounded-[2rem] border border-white/10 bg-[#0B1220] p-8 shadow-lg shadow-black/20">
+                <SectionHeader
+                  label="Share"
+                  title="Share this article"
+                  description="Help others discover this article with a quick share or copy the link to your clipboard."
+                  className="mb-6"
+                />
+                <ShareButtons title={blog.title} />
+              </Card>
+              <AuthorCard />
+            </div>
+
+            {related.length > 0 && (
+              <div>
+                <RelatedArticles posts={related} />
+              </div>
+            )}
+          </div>
+
+          <aside className="hidden xl:block">
+            <div className="sticky top-24 space-y-6">
+              <Card className="rounded-[2rem] border border-white/10 bg-[#0B1220] p-6 shadow-lg shadow-black/20">
+                <ArticleTOC headings={headings} activeId={activeId} />
+              </Card>
+              <Card className="rounded-[2rem] border border-white/10 bg-[#0B1220] p-6 shadow-lg shadow-black/20">
+                <p className="text-sm uppercase tracking-[0.3em] text-[#7C61FF]">Reading note</p>
+                <p className="mt-4 text-sm leading-6 text-slate-400">
+                  This article is optimized for deep technical reading, with a sticky table of contents and enhanced code examples.
+                </p>
+              </Card>
+            </div>
+          </aside>
         </div>
-      )}
-    </>
+      </section>
+    </article>
   );
 };
 

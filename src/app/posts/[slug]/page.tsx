@@ -22,9 +22,7 @@ const BlogPost = async ({ params }: { params: Promise<Params> }) => {
     notFound(); // This triggers the Next.js 404 page
   }
 
-  return (
-    <BlogPostComponent blog={blog} />
-  );
+  return <BlogPostComponent blog={blog} />;
 };
 
 // Fetch the blog based on slug

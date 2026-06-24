@@ -1,107 +1,67 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useState } from "react";
+import { Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Container } from "@/components/ui/container";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <div>
-      <nav className="bg-gray-900 text-white p-4">
-        <div className="container mx-auto flex justify-between items-center relative">
-          {/* Logo */}
-          <div className="text-lg font-semibold">
-            <img
-              src="/logo.png" // Path to your logo image in the 'public' folder
-              alt="Logo"
-              width="50"
-              height="auto"
-              className="mx-auto"
-            />
-          </div>
+    <header className="bg-[#070A11] text-white shadow-[0_2px_40px_rgba(0,0,0,0.15)]">
+      <Container className="relative flex items-center justify-between gap-8 py-5">
+        <Link href="/" className="inline-flex items-center gap-3 text-lg font-semibold tracking-wide text-white transition hover:text-[#7C61FF]">
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-[#7C61FF]/10 text-[#7C61FF]">
+            V
+          </span>
+          Blog UI
+        </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-6">
-            <Link href="/profile" className="hover:text-indigo-400">
-              About Me
-            </Link>
-            <Link href="/" className="hover:text-indigo-400">
-              Posts
-            </Link>
-            <Link href="/categories" className="hover:text-indigo-400">
-              Categories
-            </Link>
-          </div>
+        <nav className="hidden items-center gap-8 md:flex">
+          <Link href="/profile" className="text-sm font-medium text-slate-300 transition hover:text-white">
+            About
+          </Link>
+          <Link href="/" className="text-sm font-medium text-slate-300 transition hover:text-white">
+            Posts
+          </Link>
+          <Link href="/categories" className="text-sm font-medium text-slate-300 transition hover:text-white">
+            Categories
+          </Link>
+        </nav>
 
-          {/* Hamburger Icon for Mobile */}
-          <button
-            className="md:hidden text-white z-50"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? (
-              // Cross Icon (X)
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="w-8 h-8 text-white"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            ) : (
-              // Hamburger Icon
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="w-8 h-8 text-white"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            )}
-          </button>
-        </div>
-      </nav>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="md:hidden rounded-[1rem] p-3"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </Button>
 
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-gray-800 bg-opacity-80 text-white p-6 w-full absolute z-50 transition-all duration-300 ease-in-out">
-          <div className="flex flex-col items-center space-y-6">
-            <Link
-              href="/profile"
-              className="text-xl font-semibold py-2 px-4 rounded-lg hover:bg-indigo-600 transition-all duration-300"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              About Me
-            </Link>
-            <Link
-              href="/"
-              className="text-xl font-semibold py-2 px-4 rounded-lg hover:bg-indigo-600 transition-all duration-300"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Posts
-            </Link>
-            <Link
-              href="/categories"
-              className="text-xl font-semibold py-2 px-4 rounded-lg hover:bg-indigo-600 transition-all duration-300"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Categories
-            </Link>
+        {isMenuOpen && (
+          <div className="absolute inset-x-0 top-full z-50 rounded-b-3xl border border-white/10 bg-slate-950/95 p-6 shadow-2xl shadow-black/30 backdrop-blur-xl md:hidden">
+            <div className="flex flex-col gap-4">
+              {[
+                { href: "/profile", label: "About" },
+                { href: "/", label: "Posts" },
+                { href: "/categories", label: "Categories" },
+              ].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="rounded-2xl bg-white/5 px-4 py-3 text-base font-semibold text-white transition hover:bg-[#7C61FF]/15"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </Container>
+    </header>
   );
 };
 
