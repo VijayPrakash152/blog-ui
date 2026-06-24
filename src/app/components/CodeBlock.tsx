@@ -18,7 +18,7 @@ export const CodeBlock = ({ code, language = "" }: CodeBlockProps) => {
   };
 
   return (
-    <div className="relative rounded-[1.75rem] border border-white/10 bg-[#111827] p-4 shadow-sm shadow-black/20">
+    <div className="relative z-20 rounded-[1.75rem] border border-white/10 bg-[#111827] p-4 shadow-sm shadow-black/20">
       <div className="mb-4 flex items-center justify-between gap-3 text-sm text-slate-400">
         <span className="rounded-full bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.24em] text-slate-300">
           {language || "code"}

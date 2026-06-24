@@ -10,7 +10,10 @@ interface HeroProps {
 const Hero = ({ postCount, categoryCount }: HeroProps) => {
   return (
     <section className="relative overflow-hidden bg-[#090B0F] px-6 py-20 sm:px-10 lg:px-16">
-      <div className="absolute inset-0 opacity-20 bg-gradient-to-br from-[#6E5FFF] via-transparent to-[#00D1FF] blur-3xl" />
+      <div
+        className="absolute inset-0 opacity-20 bg-gradient-to-br from-[#6E5FFF] via-transparent to-[#00D1FF] blur-3xl pointer-events-none"
+        aria-hidden="true"
+      />
       <div className="relative mx-auto max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 24 }}

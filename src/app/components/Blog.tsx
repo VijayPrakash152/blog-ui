@@ -72,7 +72,10 @@ const BlogPostComponent = ({ blog, relatedPosts }: BlogPostComponentProps) => {
       <ReadingProgress progress={progress} />
 
       <section className="relative overflow-hidden border-b border-white/10 bg-[#090B10]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(124,97,255,0.16),transparent_35%)]" />
+        <div
+          className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(124,97,255,0.16),transparent_35%)] pointer-events-none"
+          aria-hidden="true"
+        />
         <div className="relative mx-auto max-w-7xl px-6 py-16 sm:px-10 lg:px-20">
           <div className="flex flex-col gap-8">
               <div className="-mx-6 mb-6 overflow-hidden rounded-[1.25rem]">

@@ -3,7 +3,7 @@ import { GithubIcon, LinkedInIcon, TwitterIcon } from "@/components/ui/icons";
 
 const AuthorCard = () => {
   return (
-    <aside className="rounded-[2rem] border border-white/10 bg-[#10161F] p-6 text-sm text-slate-200 shadow-sm shadow-black/20">
+    <aside className="relative z-10 rounded-[2rem] border border-white/10 bg-[#10161F] p-6 text-sm text-slate-200 shadow-sm shadow-black/20">
       <div className="flex items-start gap-4">
         <div className="shrink-0">
           <div className="h-16 w-16 overflow-hidden rounded-full border border-white/10 bg-slate-900">
