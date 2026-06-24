@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ExternalLink } from "lucide-react";
+import { GithubIcon, LinkedInIcon, TwitterIcon } from "@/components/ui/icons";
 import { remark } from "remark";
 import html from "remark-html";
 import { Container } from "@/components/ui/container";
@@ -90,16 +90,16 @@ const AboutMe = async () => {
               className="mx-auto mb-6 h-36 w-36 rounded-full object-cover shadow-xl"
             />
             <h1 className="text-3xl font-semibold text-white">Vijay Prakash</h1>
-            <p className="mt-3 text-lg text-slate-300">Software Engineer 🚀 | Lifelong Learner</p>
+            <p className="mt-3 text-lg text-slate-300">Senior Software Engineer with 5+ years shaping elegant product systems.</p>
             <div className="mt-8 flex items-center justify-center gap-4 md:justify-start">
               <a href="https://github.com/VijayPrakash152" target="_blank" rel="noopener noreferrer" className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-200 transition hover:border-[#7C61FF] hover:text-white">
-                <ExternalLink className="h-5 w-5" />
+                <GithubIcon className="h-5 w-5" />
               </a>
               <a href="https://www.linkedin.com/in/me-vijay-prakash" target="_blank" rel="noopener noreferrer" className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-200 transition hover:border-[#7C61FF] hover:text-white">
-                <ExternalLink className="h-5 w-5" />
+                <LinkedInIcon className="h-5 w-5" />
               </a>
               <a href="https://x.com/VijayPr4788148" target="_blank" rel="noopener noreferrer" className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-200 transition hover:border-[#7C61FF] hover:text-white">
-                <ExternalLink className="h-5 w-5" />
+                <TwitterIcon className="h-5 w-5" />
               </a>
             </div>
           </div>

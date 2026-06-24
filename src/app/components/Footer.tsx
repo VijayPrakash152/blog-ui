@@ -1,5 +1,5 @@
-import { ExternalLink } from "lucide-react";
 import { Container } from "@/components/ui/container";
+import { GithubIcon, LinkedInIcon, TwitterIcon } from "@/components/ui/icons";
 
 const Footer = () => {
   return (
@@ -12,13 +12,13 @@ const Footer = () => {
 
         <div className="flex items-center gap-4">
           <a href="https://x.com/VijayPr4788148" target="_blank" rel="noopener noreferrer" className="text-slate-400 transition hover:text-[#7C61FF]">
-            <ExternalLink className="h-5 w-5" />
+            <TwitterIcon className="h-5 w-5" />
           </a>
           <a href="https://github.com/VijayPrakash152" target="_blank" rel="noopener noreferrer" className="text-slate-400 transition hover:text-[#7C61FF]">
-            <ExternalLink className="h-5 w-5" />
+            <GithubIcon className="h-5 w-5" />
           </a>
           <a href="https://www.linkedin.com/in/me-vijay-prakash" target="_blank" rel="noopener noreferrer" className="text-slate-400 transition hover:text-[#7C61FF]">
-            <ExternalLink className="h-5 w-5" />
+            <LinkedInIcon className="h-5 w-5" />
           </a>
         </div>
       </Container>

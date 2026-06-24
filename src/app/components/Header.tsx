@@ -12,10 +12,8 @@ const Header = () => {
     <header className="bg-[#070A11] text-white shadow-[0_2px_40px_rgba(0,0,0,0.15)]">
       <Container className="relative flex items-center justify-between gap-8 py-5">
         <Link href="/" className="inline-flex items-center gap-3 text-lg font-semibold tracking-wide text-white transition hover:text-[#7C61FF]">
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-[#7C61FF]/10 text-[#7C61FF]">
-            V
-          </span>
-          Blog UI
+          <img src="/favicon-32x32.png" alt="Vijay Prakash favicon" className="h-10 w-10 rounded-2xl bg-[#7C61FF]/10 object-cover" />
+          Vigorous Ideas
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">

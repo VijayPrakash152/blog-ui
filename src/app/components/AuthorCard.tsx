@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ExternalLink } from "lucide-react";
+import { GithubIcon, LinkedInIcon, TwitterIcon } from "@/components/ui/icons";
 
 const AuthorCard = () => {
   return (
@@ -36,13 +36,13 @@ const AuthorCard = () => {
 
       <div className="mt-6 flex items-center gap-3 text-slate-300">
         <Link href="https://github.com/VijayPrakash152" className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/5 transition hover:bg-white/10">
-          <ExternalLink className="h-4 w-4" />
+          <GithubIcon className="h-4 w-4" />
         </Link>
         <Link href="https://www.linkedin.com/in/me-vijay-prakash" className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/5 transition hover:bg-white/10">
-          <ExternalLink className="h-4 w-4" />
+          <LinkedInIcon className="h-4 w-4" />
         </Link>
         <Link href="https://x.com/VijayPr4788148" className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/5 transition hover:bg-white/10">
-          <ExternalLink className="h-4 w-4" />
+          <TwitterIcon className="h-4 w-4" />
         </Link>
       </div>
     </aside>
