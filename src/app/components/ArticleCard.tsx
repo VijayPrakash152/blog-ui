@@ -1,18 +1,38 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Daum } from "@/api/blog/blog.interface";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import makePlaceholderDataUrl from '@/utils/lqip';
 
 interface ArticleCardProps {
   post: Daum & { contentHtml: string };
 }
 
 export const ArticleCard = ({ post }: ArticleCardProps) => {
+  const imageBlur = post.thumbnail ? ((post.thumbnail as any).blurDataURL ?? makePlaceholderDataUrl()) : undefined;
   return (
-    <Card as={motion.article} layout hoverable className="p-6">
+    <Card as={motion.article} layout hoverable className="group p-6">
+      <div className="-mx-6 mb-6 overflow-hidden rounded-[1.25rem]">
+        {post.thumbnail?.url ? (
+          <Image
+            src={post.thumbnail.url}
+            alt={`${post.title} cover`}
+            width={1200}
+            height={675}
+            placeholder="blur"
+            blurDataURL={imageBlur}
+            className="w-full h-40 object-cover"
+          />
+        ) : (
+          <div className="w-full h-40 bg-gradient-to-r from-slate-800 to-slate-700 flex items-center justify-center text-sm text-slate-200">
+            <span className="px-4 text-center">No cover image</span>
+          </div>
+        )}
+      </div>
       <motion.div
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}

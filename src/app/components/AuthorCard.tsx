@@ -26,7 +26,7 @@ const AuthorCard = () => {
       <div className="mt-6 grid gap-3 rounded-3xl border border-white/10 bg-slate-950/70 p-4">
         <div className="flex items-center justify-between">
           <span className="text-xs uppercase tracking-[0.3em] text-slate-500">Experience</span>
-          <span className="text-sm font-semibold text-white">10+ years</span>
+          <span className="text-sm font-semibold text-white">5+ years</span>
         </div>
         <div className="flex items-center justify-between">
           <span className="text-xs uppercase tracking-[0.3em] text-slate-500">Focus</span>

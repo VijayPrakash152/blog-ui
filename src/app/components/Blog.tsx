@@ -12,6 +12,8 @@ import { ShareButtons } from "./ShareButtons";
 import { Daum } from "@/api/blog/blog.interface";
 import { SectionHeader } from "@/components/ui/section-header";
 import { Card } from "@/components/ui/card";
+import Image from "next/image";
+import makePlaceholderDataUrl from '@/utils/lqip';
 
 interface BlogPostComponentProps {
   blog: Daum;
@@ -63,6 +65,7 @@ const BlogPostComponent = ({ blog, relatedPosts }: BlogPostComponentProps) => {
     const raw = blog.metadata?.description || blog.content.replace(/<[^>]+>/g, "");
     return raw.slice(0, 180).trim();
   }, [blog.metadata?.description, blog.content]);
+  const heroBlur = blog.thumbnail ? ((blog.thumbnail as any).blurDataURL ?? makePlaceholderDataUrl()) : undefined;
 
   return (
     <article className="relative bg-[#05070B] text-white">
@@ -72,7 +75,24 @@ const BlogPostComponent = ({ blog, relatedPosts }: BlogPostComponentProps) => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(124,97,255,0.16),transparent_35%)]" />
         <div className="relative mx-auto max-w-7xl px-6 py-16 sm:px-10 lg:px-20">
           <div className="flex flex-col gap-8">
-            <Link href="/" className="inline-flex items-center gap-2 text-sm text-slate-400 transition hover:text-white">
+              <div className="-mx-6 mb-6 overflow-hidden rounded-[1.25rem]">
+                {blog.thumbnail?.url ? (
+                  <Image
+                    src={blog.thumbnail.url}
+                    alt={`${blog.title} cover`}
+                    width={1600}
+                    height={900}
+                    placeholder="blur"
+                    blurDataURL={heroBlur}
+                    className="w-full h-56 object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-56 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 flex items-center justify-center text-lg text-slate-200">
+                    <span className="px-4 text-center">No cover image</span>
+                  </div>
+                )}
+              </div>
+              <Link href="/" className="inline-flex items-center gap-2 text-sm text-slate-400 transition hover:text-white">
               <ChevronLeft className="h-4 w-4" />
               Back to posts
             </Link>

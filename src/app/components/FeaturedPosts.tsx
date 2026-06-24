@@ -22,7 +22,7 @@ const FeaturedPosts = ({ posts }: FeaturedPostsProps) => {
 
         <div className="mt-10 grid gap-6 lg:grid-cols-3">
           {posts.map((post, index) => (
-            <Card key={post.id} className="p-6" hoverable>
+            <Card key={post.id} className="group p-6" hoverable>
               <motion.div
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}

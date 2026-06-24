@@ -42,7 +42,7 @@ const HomeComponent = ({ data }: HomeComponentProps) => {
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.06 }}
-                className="p-6"
+                className="group p-6"
                 hoverable
               >
                 <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.24em] text-slate-200">

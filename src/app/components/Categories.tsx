@@ -9,13 +9,10 @@ interface CategoriesPageProps {
 const CategoriesPage = ({ categories }: CategoriesPageProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-10 px-4 relative">
-      {/* Full Page Overlay */}
-      <div className="absolute inset-0 bg-gray-800 bg-opacity-70 flex items-center justify-center z-10">
-        <div className="text-center text-white text-3xl font-semibold p-6 bg-black bg-opacity-75 rounded-lg">
-          <p>This page is currently under development 🛠️🚧</p>
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-6 rounded-lg bg-black bg-opacity-60 p-4 text-center text-white">
+          <p className="text-lg font-semibold">This page is currently under development 🛠️🚧</p>
         </div>
-      </div>
-      
       <div className="container mx-auto max-w-7xl">
         <h1 className="text-5xl font-extrabold text-gray-800 mb-12 text-center">
           Explore Our Categories
@@ -51,6 +48,7 @@ const CategoriesPage = ({ categories }: CategoriesPageProps) => {
           ))}
         </div>
       </div>
+    </div>
     </div>
   );
 };
