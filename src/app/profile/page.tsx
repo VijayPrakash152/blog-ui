@@ -5,8 +5,13 @@ import html from "remark-html";
 import { Container } from "@/components/ui/container";
 import { SectionHeader } from "@/components/ui/section-header";
 
+const getApiUrl = (path: string) => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+  return new URL(path, apiUrl).toString();
+};
+
 const fetchProfileData = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile`, {
+  const res = await fetch(getApiUrl('/api/profile'), {
     next: { revalidate: 86400 },
   });
 

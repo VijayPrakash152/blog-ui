@@ -8,9 +8,16 @@ const preprocessMarkdown = async (markdown: string) => {
   return processed.toString();
 };
 
+const getApiUrl = (path: string) => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+  return new URL(path, apiUrl).toString();
+};
+
 const Home = async () => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/blogs?pagination[page]=1&pagination[pageSize]=6&populate[thumbnail][fields][0]=url&populate[category]=true`,
+    getApiUrl(
+      '/api/blogs?pagination[page]=1&pagination[pageSize]=6&populate[thumbnail][fields][0]=url&populate[category]=true'
+    ),
     {
       next: { revalidate: 86400 },
     }

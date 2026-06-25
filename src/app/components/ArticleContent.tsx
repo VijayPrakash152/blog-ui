@@ -14,7 +14,7 @@ const normalizeId = (text: string) =>
     .replace(/(^-|-$)/g, "");
 
 export const ArticleContent = ({ html, onHeadingsChange }: ArticleContentProps) => {
-  const parsedHtml = useMemo(() => {
+  const { parsedHtml, headings } = useMemo(() => {
     const headings: TocItem[] = [];
 
     let transformed = html.replace(/<(h[23])>(.*?)<\/\1>/gi, (_, tag, content) => {
@@ -40,9 +40,15 @@ export const ArticleContent = ({ html, onHeadingsChange }: ArticleContentProps) 
       }
     );
 
+    return {
+      parsedHtml: transformed,
+      headings,
+    };
+  }, [html]);
+
+  useEffect(() => {
     onHeadingsChange(headings);
-    return transformed;
-  }, [html, onHeadingsChange]);
+  }, [headings, onHeadingsChange]);
 
   useEffect(() => {
     const contentRoot = document.getElementById("article-content-root");
@@ -73,7 +79,7 @@ export const ArticleContent = ({ html, onHeadingsChange }: ArticleContentProps) 
   return (
     <div
       id="article-content-root"
-      className="article-body"
+      className="article-body mx-auto max-w-3xl"
       dangerouslySetInnerHTML={{ __html: parsedHtml }}
     />
   );

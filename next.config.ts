@@ -13,10 +13,20 @@ const nextConfig: NextConfig = {
     ],
   },
   async rewrites() {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+
     return [
       {
-        source: '/api/blogs',  // your frontend route
-        destination: `${process.env.NEXT_PUBLIC_API_URL}/api/blogs`,  // backend API
+        source: '/api/blogs',
+        destination: `${apiUrl}/api/blogs`,
+      },
+      {
+        source: '/api/categories',
+        destination: `${apiUrl}/api/categories`,
+      },
+      {
+        source: '/api/profile',
+        destination: `${apiUrl}/api/profile`,
       },
     ];
   },

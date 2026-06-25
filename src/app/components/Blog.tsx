@@ -73,55 +73,58 @@ const BlogPostComponent = ({ blog, relatedPosts }: BlogPostComponentProps) => {
 
       <section className="relative overflow-hidden border-b border-white/10 bg-[#090B10]">
         <div
-          className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(124,97,255,0.16),transparent_35%)] pointer-events-none"
+          className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(124,97,255,0.18),transparent_38%)] pointer-events-none"
           aria-hidden="true"
         />
-        <div className="relative mx-auto max-w-7xl px-6 py-16 sm:px-10 lg:px-20">
-          <div className="flex flex-col gap-8">
-              <div className="-mx-6 mb-6 overflow-hidden rounded-[1.25rem]">
-                {blog.thumbnail?.url ? (
-                  <Image
-                    src={blog.thumbnail.url}
-                    alt={`${blog.title} cover`}
-                    width={1600}
-                    height={900}
-                    placeholder="blur"
-                    blurDataURL={heroBlur}
-                    className="w-full h-56 object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-56 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 flex items-center justify-center text-lg text-slate-200">
-                    <span className="px-4 text-center">No cover image</span>
-                  </div>
-                )}
-              </div>
-              <Link href="/" className="inline-flex items-center gap-2 text-sm text-slate-400 transition hover:text-white">
-              <ChevronLeft className="h-4 w-4" />
-              Back to posts
-            </Link>
+        <div className="relative mx-auto max-w-7xl px-6 py-20 sm:px-10 lg:px-20">
+          <div className="flex flex-col gap-10">
+            <div className="-mx-6 mb-8 overflow-hidden rounded-[1.75rem] sm:-mx-10 md:-mx-16">
+              {blog.thumbnail?.url ? (
+                <Image
+                  src={blog.thumbnail.url}
+                  alt={`${blog.title} cover`}
+                  width={1600}
+                  height={900}
+                  placeholder="blur"
+                  blurDataURL={heroBlur}
+                  className="w-full h-[420px] sm:h-[520px] object-cover"
+                />
+              ) : (
+                <div className="w-full h-[420px] sm:h-[520px] bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 flex items-center justify-center text-lg text-slate-200">
+                  <span className="px-4 text-center">No cover image</span>
+                </div>
+              )}
+            </div>
 
-            <div className="max-w-3xl space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.3em] text-slate-200">
-                <TagIcon className="h-4 w-4 text-[#7C61FF]" />
-                {blog.category?.name || "Uncategorized"}
-              </div>
-              <h1 className="text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
-                {blog.title}
-              </h1>
-              <p className="max-w-2xl text-lg leading-8 text-slate-300">{summary}</p>
-              <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400">
-                <span className="inline-flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  {new Date(blog.publishedAt).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </span>
-                <span className="inline-flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  8 min read
-                </span>
+            <div className="flex flex-col gap-6 px-1 sm:px-0">
+              <Link href="/" className="inline-flex items-center gap-2 text-sm text-slate-400 transition hover:text-white">
+                <ChevronLeft className="h-4 w-4" />
+                Back to posts
+              </Link>
+
+              <div className="max-w-4xl space-y-6">
+                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.3em] text-slate-200">
+                  <TagIcon className="h-4 w-4 text-[#7C61FF]" />
+                  {blog.category?.name || "Uncategorized"}
+                </div>
+                <h1 className="text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
+                  {blog.title}
+                </h1>
+                <p className="max-w-3xl text-lg leading-8 text-slate-300">{summary}</p>
+                <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400">
+                  <span className="inline-flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    {new Date(blog.publishedAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </span>
+                  <span className="inline-flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    8 min read
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -131,8 +134,10 @@ const BlogPostComponent = ({ blog, relatedPosts }: BlogPostComponentProps) => {
       <section className="relative mx-auto max-w-7xl px-6 py-16 sm:px-10 lg:px-20">
         <div className="grid gap-12 xl:grid-cols-[1.8fr_0.9fr] xl:items-start">
           <div className="space-y-12">
-            <Card className="rounded-[2rem] border border-white/10 bg-[#0B1220] p-8 shadow-lg shadow-black/20">
-              <ArticleContent html={blog.content} onHeadingsChange={setHeadings} />
+            <Card className="rounded-[2rem] border border-white/10 bg-[#0B1220] p-10 shadow-lg shadow-black/20">
+              <div className="mx-auto max-w-3xl">
+                <ArticleContent html={blog.content} onHeadingsChange={setHeadings} />
+              </div>
             </Card>
 
             <div className="grid gap-8 lg:grid-cols-[1fr_0.45fr]">
