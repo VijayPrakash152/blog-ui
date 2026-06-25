@@ -12,6 +12,8 @@ interface Params{
 }
 
 // Server Component that fetches data on the server side
+export const dynamic = "force-dynamic";
+
 const BlogPost = async ({ params }: { params: Promise<Params> }) => {
   const { slug } =  await params;
 
@@ -27,24 +29,31 @@ const BlogPost = async ({ params }: { params: Promise<Params> }) => {
 
 // Fetch the blog based on slug
 const getApiUrl = (path: string) => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL?.trim() || "http://localhost:3000";
   return new URL(path, apiUrl).toString();
 };
 
 const fetchSingleBlog = async (slug: string) => {
-  const res = await fetch(
-    getApiUrl(
-      `/api/blogs?filters[slug][$eq]=${slug}&populate[thumbnail][fields][0]=url&populate[category]=true&populate[metadata][populate][keywords]=true&populate[metadata][populate][image][fields][0]=url`
-    ),
-    { next: { revalidate: 86400 } }
+  const url = getApiUrl(
+    `/api/blogs?filters[slug][$eq]=${slug}&populate[thumbnail][fields][0]=url&populate[category]=true&populate[metadata][populate][keywords]=true&populate[metadata][populate][image][fields][0]=url`
   );
 
+  if (!url) {
+    return null;
+  }
+
+  const res = await fetch(url, { next: { revalidate: 86400 } });
+
   if (!res.ok) {
-    throw new Error('Failed to fetch blog data');
+    return null;
   }
 
   const data = await res.json();
-  const blog =  data.data[0]; // Assuming API returns a single blog
+  const blog = data.data[0];
+
+  if (!blog) {
+    return null;
+  }
 
   const processedContent = await remark().use(html).process(blog.content);
   blog.content = processedContent.toString();

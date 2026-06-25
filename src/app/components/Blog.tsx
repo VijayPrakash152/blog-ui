@@ -141,7 +141,8 @@ const BlogPostComponent = ({ blog, relatedPosts }: BlogPostComponentProps) => {
             </Card>
 
             <div className="grid gap-8 lg:grid-cols-[1fr_0.45fr]">
-              <Card className="rounded-[2rem] border border-white/10 bg-[#0B1220] p-8 shadow-lg shadow-black/20">
+              <div className="grid gap-8 lg:grid-cols-[1fr_0.45fr]">
+              <Card className="w-full rounded-[2rem] border border-white/10 bg-[#0B1220] p-8 shadow-lg shadow-black/20">
                 <SectionHeader
                   label="Share"
                   title="Share this article"
@@ -150,7 +151,10 @@ const BlogPostComponent = ({ blog, relatedPosts }: BlogPostComponentProps) => {
                 />
                 <ShareButtons title={blog.title} />
               </Card>
-              <AuthorCard />
+              <div className="w-full">
+                <AuthorCard />
+              </div>
+            </div>
             </div>
 
             {related.length > 0 && (

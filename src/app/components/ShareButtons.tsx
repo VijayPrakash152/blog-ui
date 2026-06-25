@@ -23,20 +23,20 @@ export const ShareButtons = ({ title }: ShareButtonsProps) => {
   };
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2">
-      <Button type="button" variant="secondary" className="justify-center gap-2" onClick={() => openWindow(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(currentUrl)}`)}>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <Button type="button" variant="secondary" className="w-full justify-center gap-2" onClick={() => openWindow(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(currentUrl)}`)}>
         <Share2 className="h-4 w-4" />
         Twitter
       </Button>
-      <Button type="button" variant="secondary" className="justify-center gap-2" onClick={() => openWindow(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`)}>
+      <Button type="button" variant="secondary" className="w-full justify-center gap-2" onClick={() => openWindow(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`)}>
         <ExternalLink className="h-4 w-4" />
         LinkedIn
       </Button>
-      <Button type="button" variant="secondary" className="justify-center gap-2" onClick={() => openWindow(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`)}>
+      <Button type="button" variant="secondary" className="w-full justify-center gap-2" onClick={() => openWindow(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`)}>
         <ExternalLink className="h-4 w-4" />
         Facebook
       </Button>
-      <Button type="button" variant="secondary" className="justify-center gap-2" onClick={handleCopyLink}>
+      <Button type="button" variant="secondary" className="w-full justify-center gap-2" onClick={handleCopyLink}>
         <LinkIcon className="h-4 w-4" />
         Copy link
       </Button>

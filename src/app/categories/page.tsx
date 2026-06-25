@@ -9,7 +9,7 @@ const preprocessMarkdown = async (markdown: string) => {
 };
 
 const getApiUrl = (path: string) => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL?.trim() || "http://localhost:3000";
   return new URL(path, apiUrl).toString();
 };
 
@@ -25,14 +25,11 @@ const fetchJson = async (url: string) => {
 
 const Categories = async () => {
   try {
-    const [blogsData, categoriesData] = await Promise.all([
-      fetchJson(
-        getApiUrl(
-          '/api/blogs?pagination[page]=1&pagination[pageSize]=50&populate[thumbnail][fields][0]=url&populate[category]=true'
-        )
-      ),
-      fetchJson(getApiUrl('/api/categories?populate[image][fields][0]=url')),
-    ]);
+    const blogsData = await fetchJson(
+      getApiUrl(
+        '/api/blogs?pagination[page]=1&pagination[pageSize]=50&populate[thumbnail][fields][0]=url&populate[category]=true'
+      )
+    );
 
     const posts: Array<Daum & { contentHtml: string }> = await Promise.all(
       blogsData?.data?.map(async (blog: Daum) => ({
@@ -41,7 +38,11 @@ const Categories = async () => {
       })) || []
     );
 
-    const categories = categoriesData?.data?.map((category: { name: string }) => category.name) || [];
+    const categories = Array.from(
+      new Set(
+        posts.map((post) => post.category?.name || 'Uncategorized')
+      )
+    );
 
     return <BlogListingPage posts={posts} categories={categories} />;
   } catch (error) {

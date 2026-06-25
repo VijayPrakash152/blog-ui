@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
     ],
   },
   async rewrites() {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL?.trim() || "http://localhost:3000";
 
     return [
       {

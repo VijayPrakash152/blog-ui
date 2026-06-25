@@ -5,8 +5,10 @@ import html from "remark-html";
 import { Container } from "@/components/ui/container";
 import { SectionHeader } from "@/components/ui/section-header";
 
+export const dynamic = "force-dynamic";
+
 const getApiUrl = (path: string) => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL?.trim() || "http://localhost:3000";
   return new URL(path, apiUrl).toString();
 };
 
