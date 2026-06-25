@@ -13,10 +13,13 @@ const getApiUrl = (path: string) => {
   return new URL(path, apiUrl).toString();
 };
 
+// FIX 1: Change to force-dynamic without fetch conflict, OR let Next.js handle revalidation properly.
+// If you want it dynamic, remove the 24-hour cache rule inside the fetch function.
 export const dynamic = "force-dynamic";
 
 const fetchJson = async (url: string) => {
-  const res = await fetch(url, { next: { revalidate: 86400 } });
+  // Removed NextJS static revalidation options because this page is forced to be dynamic.
+  const res = await fetch(url, { cache: "no-store" }); 
   if (!res.ok) {
     throw new Error(`Failed to fetch data from ${url}`);
   }
@@ -31,21 +34,26 @@ const Categories = async () => {
       )
     );
 
+    // FIX 2: Added optional chaining fallback (?.) so client-side navigation won't crash if data shape shifts slightly during transition
     const posts: Array<Daum & { contentHtml: string }> = await Promise.all(
       blogsData?.data?.map(async (blog: Daum) => ({
         ...blog,
-        contentHtml: await preprocessMarkdown(blog.content.substring(0, 140) + ' ... '),
+        contentHtml: await preprocessMarkdown(blog?.content ? blog.content.substring(0, 140) + ' ... ' : ''),
       })) || []
     );
 
     const categories = Array.from(
       new Set(
-        posts.map((post) => post.category?.name || 'Uncategorized')
+        posts
+          .map((post) => post?.category?.name)
+          .filter((name): name is string => Boolean(name)) // Clean out empty/null fields
       )
     );
 
-    return <BlogListingPage posts={posts} categories={categories} />;
+    // Ensure we are passing arrays down to prevent .map() failures on the client side
+    return <BlogListingPage posts={posts || []} categories={categories.length > 0 ? categories : ['Uncategorized']} />;
   } catch (error) {
+    console.error("Categories route processing error:", error);
     return (
       <div className="min-h-screen bg-[#05070B] px-6 py-20 text-white sm:px-10 lg:px-16">
         <div className="mx-auto max-w-4xl rounded-[2rem] border border-white/10 bg-[#0B1220] p-10 text-center shadow-lg shadow-black/20">

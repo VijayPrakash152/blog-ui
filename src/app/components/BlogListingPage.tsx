@@ -15,7 +15,7 @@ interface BlogListingPageProps {
 
 const PAGE_SIZE = 6;
 
-const BlogListingPage = ({ posts, categories, initialPage = 1 }: BlogListingPageProps) => {
+const BlogListingPage = ({ posts = [], categories= [], initialPage = 1 }: BlogListingPageProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sort, setSort] = useState("newest");
