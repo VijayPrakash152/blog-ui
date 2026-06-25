@@ -65,20 +65,23 @@ const BlogPostComponent = ({ blog, relatedPosts }: BlogPostComponentProps) => {
     const raw = blog.metadata?.description || blog.content.replace(/<[^>]+>/g, "");
     return raw.slice(0, 180).trim();
   }, [blog.metadata?.description, blog.content]);
+  
   const heroBlur = blog.thumbnail ? ((blog.thumbnail as any).blurDataURL ?? makePlaceholderDataUrl()) : undefined;
 
   return (
-    <article className="relative bg-[#05070B] text-white">
+    <article className="relative bg-[#05070B] text-white w-full overflow-x-hidden">
       <ReadingProgress progress={progress} />
 
+      {/* Hero Header Section */}
       <section className="relative overflow-hidden border-b border-white/10 bg-[#090B10]">
         <div
           className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(124,97,255,0.18),transparent_38%)] pointer-events-none"
           aria-hidden="true"
         />
-        <div className="relative mx-auto max-w-7xl px-6 py-20 sm:px-10 lg:px-20">
-          <div className="flex flex-col gap-10">
-            <div className="-mx-6 mb-8 overflow-hidden rounded-[1.75rem] sm:-mx-10 md:-mx-16">
+        <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-10 lg:px-20 lg:py-20">
+          <div className="flex flex-col gap-6 sm:gap-10">
+            {/* Image Container with responsive aspect ratio/height */}
+            <div className="-mx-4 overflow-hidden rounded-xl sm:-mx-10 md:-mx-16 sm:rounded-[1.75rem]">
               {blog.thumbnail?.url ? (
                 <Image
                   src={blog.thumbnail.url}
@@ -87,10 +90,11 @@ const BlogPostComponent = ({ blog, relatedPosts }: BlogPostComponentProps) => {
                   height={900}
                   placeholder="blur"
                   blurDataURL={heroBlur}
-                  className="w-full h-[420px] sm:h-[520px] object-cover"
+                  className="w-full h-[240px] sm:h-[420px] md:h-[520px] object-cover"
+                  priority
                 />
               ) : (
-                <div className="w-full h-[420px] sm:h-[520px] bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 flex items-center justify-center text-lg text-slate-200">
+                <div className="w-full h-[240px] sm:h-[420px] bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 flex items-center justify-center text-sm sm:text-lg text-slate-200">
                   <span className="px-4 text-center">No cover image</span>
                 </div>
               )}
@@ -102,16 +106,16 @@ const BlogPostComponent = ({ blog, relatedPosts }: BlogPostComponentProps) => {
                 Back to posts
               </Link>
 
-              <div className="max-w-4xl space-y-6">
-                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.3em] text-slate-200">
-                  <TagIcon className="h-4 w-4 text-[#7C61FF]" />
+              <div className="max-w-4xl space-y-4 sm:space-y-6">
+                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] sm:text-xs uppercase tracking-[0.3em] text-slate-200 w-fit">
+                  <TagIcon className="h-3.5 w-3.5 text-[#7C61FF]" />
                   {blog.category?.name || "Uncategorized"}
                 </div>
-                <h1 className="text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
+                <h1 className="text-2xl font-semibold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
                   {blog.title}
                 </h1>
-                <p className="max-w-3xl text-lg leading-8 text-slate-300">{summary}</p>
-                <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400">
+                <p className="max-w-3xl text-sm sm:text-lg leading-relaxed sm:leading-8 text-slate-300">{summary}</p>
+                <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-slate-400">
                   <span className="inline-flex items-center gap-2">
                     <Calendar className="h-4 w-4" />
                     {new Date(blog.publishedAt).toLocaleDateString("en-US", {
@@ -131,22 +135,25 @@ const BlogPostComponent = ({ blog, relatedPosts }: BlogPostComponentProps) => {
         </div>
       </section>
 
-      <section className="relative mx-auto max-w-7xl px-6 py-16 sm:px-10 lg:px-20">
-        <div className="grid gap-12 xl:grid-cols-[1.8fr_0.9fr] xl:items-start">
-          <div className="space-y-12">
-            <Card className="rounded-[2rem] border border-white/10 bg-[#0B1220] p-10 shadow-lg shadow-black/20">
+      {/* Main Content Layout */}
+      <section className="relative mx-auto max-w-7xl px-4 py-8 sm:px-10 lg:px-20 sm:py-16">
+        <div className="grid gap-8 xl:grid-cols-[1.8fr_0.9fr] xl:items-start">
+          
+          <div className="space-y-8 sm:space-y-12 min-w-0">
+            {/* Main Article Content Card */}
+            <Card className="rounded-2xl sm:rounded-[2rem] border border-white/10 bg-[#0B1220] p-5 sm:p-10 shadow-lg shadow-black/20">
               <div className="mx-auto max-w-3xl">
                 <ArticleContent html={blog.content} onHeadingsChange={setHeadings} />
               </div>
             </Card>
 
-            <div className="grid gap-8 lg:grid-cols-[1fr_0.45fr]">
-              <div className="grid gap-8 lg:grid-cols-[1fr_0.45fr]">
-              <Card className="w-full rounded-[2rem] border border-white/10 bg-[#0B1220] p-8 shadow-lg shadow-black/20">
+            {/* Share and Author Section Grid */}
+            <div className="grid gap-6 lg:grid-cols-[1fr_0.45fr] items-start">
+              <Card className="w-full rounded-2xl sm:rounded-[2rem] border border-white/10 bg-[#0B1220] p-5 sm:p-8 shadow-lg shadow-black/20">
                 <SectionHeader
                   label="Share"
                   title="Share this article"
-                  description="Help others discover this article with a quick share or copy the link to your clipboard."
+                  description="Help others discover this article with a quick share."
                   className="mb-6"
                 />
                 <ShareButtons title={blog.title} />
@@ -154,7 +161,6 @@ const BlogPostComponent = ({ blog, relatedPosts }: BlogPostComponentProps) => {
               <div className="w-full">
                 <AuthorCard />
               </div>
-            </div>
             </div>
 
             {related.length > 0 && (
@@ -164,6 +170,7 @@ const BlogPostComponent = ({ blog, relatedPosts }: BlogPostComponentProps) => {
             )}
           </div>
 
+          {/* Desktop Sidebar */}
           <aside className="hidden xl:block">
             <div className="sticky top-24 space-y-6">
               <Card className="rounded-[2rem] border border-white/10 bg-[#0B1220] p-6 shadow-lg shadow-black/20">
@@ -177,6 +184,7 @@ const BlogPostComponent = ({ blog, relatedPosts }: BlogPostComponentProps) => {
               </Card>
             </div>
           </aside>
+
         </div>
       </section>
     </article>
