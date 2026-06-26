@@ -6,19 +6,90 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SectionHeader } from "@/components/ui/section-header";
 
+const loopsFormId = process.env.NEXT_PUBLIC_LOOPS_FORM_ID;
+const endpoint = loopsFormId
+  ? `https://app.loops.so/api/newsletter-form/${loopsFormId}`
+  : undefined;
+
+const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
 const NewsletterCTA = () => {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState<string>("");
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!email || !email.includes("@")) {
-      setStatus("error");
+
+    if (status === "loading") {
       return;
     }
-    setStatus("success");
-    setEmail("");
+
+    if (!email.trim() || !isValidEmail(email)) {
+      setStatus("error");
+      setMessage("Please enter a valid email address.");
+      return;
+    }
+
+    if (!endpoint) {
+      setStatus("error");
+      setMessage(
+        process.env.NODE_ENV === "development"
+          ? "Loops form ID is not configured. Set NEXT_PUBLIC_LOOPS_FORM_ID."
+          : "Something went wrong. Please try again."
+      );
+      return;
+    }
+
+    setStatus("loading");
+    setMessage("");
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          email: email.trim(),
+          userGroup: "",
+          mailingLists: "",
+        }),
+      });
+
+      const responseText = await response.text();
+      let responseData: unknown = null;
+
+      try {
+        responseData = responseText ? JSON.parse(responseText) : null;
+      } catch {
+        responseData = null;
+      }
+
+      if (!response.ok) {
+        const apiError =
+          responseData && typeof responseData === "object" && responseData !== null
+            ? (responseData as { message?: string; error?: string }).message ||
+              (responseData as { message?: string; error?: string }).error
+            : null;
+
+        setStatus("error");
+        setMessage(apiError || "Something went wrong. Please try again.");
+        return;
+      }
+
+      setStatus("success");
+      setMessage("🎉 Thanks for subscribing! Please check your inbox to confirm your subscription.");
+      setEmail("");
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Something went wrong. Please try again.";
+      setStatus("error");
+      setMessage(errorMessage || "Something went wrong. Please try again.");
+    }
   };
+
+  const isLoading = status === "loading";
 
   return (
     <motion.section
@@ -47,24 +118,34 @@ const NewsletterCTA = () => {
               value={email}
               onChange={(event) => {
                 setEmail(event.target.value);
-                setStatus("idle");
+                if (status !== "idle") {
+                  setStatus("idle");
+                  setMessage("");
+                }
               }}
               placeholder="you@example.com"
               className="pl-12"
+              disabled={isLoading}
             />
           </div>
-          <Button type="submit" className="rounded-full px-6 py-4 text-sm font-semibold">
-            Subscribe
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="rounded-full px-6 py-4 text-sm font-semibold"
+          >
+            {isLoading ? "Subscribing..." : "Subscribe"}
             <Send className="ml-2 h-4 w-4" />
           </Button>
         </form>
 
-        {status === "success" && (
-          <p className="mt-6 text-sm text-green-400">Thanks! You’re on the list.</p>
-        )}
-        {status === "error" && (
-          <p className="mt-6 text-sm text-rose-400">Please enter a valid email address.</p>
-        )}
+        {message ? (
+          <p
+            className={`mt-6 text-sm ${status === "success" ? "text-green-400" : "text-rose-400"}`}
+            aria-live="polite"
+          >
+            {message}
+          </p>
+        ) : null}
       </div>
     </motion.section>
   );
