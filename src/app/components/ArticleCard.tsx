@@ -3,17 +3,20 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { Daum } from "@/api/blog/blog.interface";
+import { Daum, Thumbnail } from "@/api/blog/blog.interface";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import makePlaceholderDataUrl from '@/utils/lqip';
 
-interface ArticleCardProps {
+type ArticleCardProps = {
   post: Daum & { contentHtml: string };
-}
+};
+
+type ThumbnailWithBlur = Thumbnail & { blurDataURL?: string };
 
 export const ArticleCard = ({ post }: ArticleCardProps) => {
-  const imageBlur = post.thumbnail ? ((post.thumbnail as any).blurDataURL ?? makePlaceholderDataUrl()) : undefined;
+  const thumbnail = post.thumbnail as ThumbnailWithBlur;
+  const imageBlur = thumbnail ? thumbnail.blurDataURL ?? makePlaceholderDataUrl() : undefined;
   return (
     <Card as={motion.article} layout hoverable className="group p-6">
       <div className="-mx-6 mb-6 overflow-hidden rounded-[1.25rem]">

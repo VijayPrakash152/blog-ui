@@ -6,11 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SectionHeader } from "@/components/ui/section-header";
 
-const loopsFormId = process.env.NEXT_PUBLIC_LOOPS_FORM_ID;
-const endpoint = loopsFormId
-  ? `https://app.loops.so/api/newsletter-form/${loopsFormId}`
-  : undefined;
-
 const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
 const NewsletterCTA = () => {
@@ -31,50 +26,28 @@ const NewsletterCTA = () => {
       return;
     }
 
-    if (!endpoint) {
-      setStatus("error");
-      setMessage(
-        process.env.NODE_ENV === "development"
-          ? "Loops form ID is not configured. Set NEXT_PUBLIC_LOOPS_FORM_ID."
-          : "Something went wrong. Please try again."
-      );
-      return;
-    }
-
     setStatus("loading");
     setMessage("");
 
     try {
-      const response = await fetch(endpoint, {
+      const response = await fetch("/api/newsletter/subscribe", {
         method: "POST",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
         },
-        body: new URLSearchParams({
-          email: email.trim(),
-          userGroup: "",
-          mailingLists: "",
-        }),
+        body: JSON.stringify({ email: email.trim() }),
       });
 
-      const responseText = await response.text();
-      let responseData: unknown = null;
+      const responseData = await response.json().catch(() => null);
 
-      try {
-        responseData = responseText ? JSON.parse(responseText) : null;
-      } catch {
-        responseData = null;
-      }
-
-      if (!response.ok) {
-        const apiError =
+      if (!response.ok || !responseData || responseData.success === false) {
+        const apiMessage =
           responseData && typeof responseData === "object" && responseData !== null
-            ? (responseData as { message?: string; error?: string }).message ||
-              (responseData as { message?: string; error?: string }).error
+            ? (responseData as { message?: string }).message
             : null;
 
         setStatus("error");
-        setMessage(apiError || "Something went wrong. Please try again.");
+        setMessage(apiMessage || "Something went wrong. Please try again.");
         return;
       }
 

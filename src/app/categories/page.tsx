@@ -11,7 +11,7 @@ const preprocessMarkdown = async (markdown: string) => {
   try {
     const processed = await compiler.process(markdown);
     return processed.toString();
-  } catch (e) {
+  } catch {
     return markdown; // Fallback to raw text if compilation hiccups
   }
 };

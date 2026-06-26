@@ -43,7 +43,7 @@ const Home = async () => {
     );
 
     return <HomeComponent data={processedPosts} />;
-  } catch (error) {
+  } catch {
     return (
       <div className="min-h-screen bg-[#05070B] px-6 py-20 text-white sm:px-10 lg:px-16">
         <div className="mx-auto max-w-4xl rounded-[2rem] border border-white/10 bg-[#0B1220] p-10 text-center shadow-lg shadow-black/20">

@@ -9,7 +9,7 @@ import ReadingProgress from "./ReadingProgress";
 import AuthorCard from "./AuthorCard";
 import RelatedArticles from "./RelatedArticles";
 import { ShareButtons } from "./ShareButtons";
-import { Daum } from "@/api/blog/blog.interface";
+import { Daum, Thumbnail } from "@/api/blog/blog.interface";
 import { SectionHeader } from "@/components/ui/section-header";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
@@ -66,7 +66,8 @@ const BlogPostComponent = ({ blog, relatedPosts }: BlogPostComponentProps) => {
     return raw.slice(0, 180).trim();
   }, [blog.metadata?.description, blog.content]);
   
-  const heroBlur = blog.thumbnail ? ((blog.thumbnail as any).blurDataURL ?? makePlaceholderDataUrl()) : undefined;
+  const thumbnail = blog.thumbnail as Thumbnail & { blurDataURL?: string };
+  const heroBlur = thumbnail ? thumbnail.blurDataURL ?? makePlaceholderDataUrl() : undefined;
 
   return (
     <article className="relative bg-[#05070B] text-white w-full overflow-x-hidden">
