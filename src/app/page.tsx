@@ -8,10 +8,8 @@ const preprocessMarkdown = async (markdown: string) => {
   return processed.toString();
 };
 
-export const dynamic = "force-dynamic";
-
 const getApiUrl = (path: string) => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL?.trim() || "http://localhost:3000";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL?.trim() || "https://api.vijayprakash.co.in";
   return new URL(path, apiUrl).toString();
 };
 
@@ -20,7 +18,7 @@ const fetchJson = async (url: string | null) => {
     throw new Error("API URL is not configured");
   }
 
-  const response = await fetch(url, { next: { revalidate: 86400 } });
+  const response = await fetch(url, { cache: "force-cache" });
   if (!response.ok) {
     throw new Error(`Failed to fetch data from ${url}`);
   }

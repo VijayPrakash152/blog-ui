@@ -11,9 +11,6 @@ interface Params{
   slug: string;
 }
 
-// Server Component that fetches data on the server side
-export const dynamic = "force-dynamic";
-
 const BlogPost = async ({ params }: { params: Promise<Params> }) => {
   const { slug } =  await params;
 
@@ -29,7 +26,7 @@ const BlogPost = async ({ params }: { params: Promise<Params> }) => {
 
 // Fetch the blog based on slug
 const getApiUrl = (path: string) => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL?.trim() || "http://localhost:3000";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL?.trim() || "https://api.vijayprakash.co.in";
   return new URL(path, apiUrl).toString();
 };
 
@@ -42,7 +39,7 @@ const fetchSingleBlog = async (slug: string) => {
     return null;
   }
 
-  const res = await fetch(url, { next: { revalidate: 86400 } });
+  const res = await fetch(url, { cache: "force-cache" });
 
   if (!res.ok) {
     return null;
@@ -59,6 +56,33 @@ const fetchSingleBlog = async (slug: string) => {
   blog.content = processedContent.toString();
   return blog;
 };
+
+// Pre-render all blog posts at build time
+export async function generateStaticParams() {
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL?.trim() || "https://api.vijayprakash.co.in";
+    const url = new URL(
+      "/api/blogs?pagination[pageSize]=100&fields[0]=slug",
+      apiUrl
+    ).toString();
+
+    const response = await fetch(url, { cache: "force-cache" });
+    
+    if (!response.ok) {
+      return [];
+    }
+
+    const data = await response.json();
+    const blogs = data?.data || [];
+
+    return blogs.map((blog: { slug: string }) => ({
+      slug: blog.slug,
+    }));
+  } catch (error) {
+    console.error("Error generating static params:", error);
+    return [];
+  }
+}
 
 export async function generateMetadata({ params }: { params: Promise<Params>  }): Promise<Metadata> {
   const { slug } =  await params;
@@ -90,3 +114,4 @@ export async function generateMetadata({ params }: { params: Promise<Params>  })
   };
 }
 export default BlogPost;
+
