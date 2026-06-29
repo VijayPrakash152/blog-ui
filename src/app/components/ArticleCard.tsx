@@ -18,7 +18,7 @@ export const ArticleCard = ({ post }: ArticleCardProps) => {
   const thumbnail = post.thumbnail as ThumbnailWithBlur;
   const imageBlur = thumbnail ? thumbnail.blurDataURL ?? makePlaceholderDataUrl() : undefined;
   return (
-    <Card as={motion.article} layout hoverable className="group p-6">
+    <Card className="group p-6">
       <div className="-mx-6 mb-6 overflow-hidden rounded-[1.25rem]">
         {post.thumbnail?.url ? (
           <Image
