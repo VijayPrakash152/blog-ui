@@ -5,16 +5,14 @@ import html from "remark-html";
 import { Container } from "@/components/ui/container";
 import { SectionHeader } from "@/components/ui/section-header";
 
-export const dynamic = "force-dynamic";
-
 const getApiUrl = (path: string) => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL?.trim() || "http://localhost:3000";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL?.trim() || "https://api.vijayprakash.co.in";
   return new URL(path, apiUrl).toString();
 };
 
 const fetchProfileData = async () => {
   const res = await fetch(getApiUrl('/api/profile'), {
-    next: { revalidate: 86400 },
+    cache: "force-cache",
   });
 
   if (!res.ok) {
