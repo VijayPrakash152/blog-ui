@@ -16,6 +16,22 @@ function resolveMediaUrl(url: string | undefined | null): string {
   return url.startsWith('http') ? url : `${STRAPI_BASE_URL}${url}`;
 }
 
+// Strips basic markdown syntax down to plain text, then truncates
+function markdownToPlainExcerpt(markdown: string, maxLength = 220): string {
+  if (!markdown) return '';
+
+  const plain = markdown
+    .replace(/!\[.*?\]\(.*?\)/g, '') // images
+    .replace(/\[(.*?)\]\(.*?\)/g, '$1') // links -> link text only
+    .replace(/[#>*_`~-]/g, '') // markdown symbols
+    .replace(/\n+/g, ' ') // collapse newlines
+    .replace(/\s+/g, ' ') // collapse whitespace
+    .trim();
+
+  if (plain.length <= maxLength) return plain;
+  return plain.slice(0, maxLength).trim() + '…';
+}
+
 async function uploadImageToLoops(imageUrl: string): Promise<string | null> {
   try {
     const imageRes = await fetch(imageUrl);
@@ -101,7 +117,7 @@ export async function POST(req: Request) {
   if (needsRefetch && entry.id) {
     try {
       const refetchRes = await fetch(
-        `${STRAPI_BASE_URL}/api/blogs/${entry.id}?populate=thumbnail&populate=metadata.image`,
+        `${STRAPI_BASE_URL}/api/posts/${entry.id}?populate=thumbnail&populate=metadata.image`,
         { headers: { Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}` } }
       );
 
@@ -119,12 +135,13 @@ export async function POST(req: Request) {
   const postTitle: string = entry.title ?? 'New post';
   const postSlug: string = entry.slug;
   const postExcerpt: string = entry.metadata?.description ?? '';
-  const postUrl = `${SITE_URL}/blog/${postSlug}`;
+  const postUrl = `${SITE_URL}/posts/${postSlug}`;
+
+  const contentSnippet = markdownToPlainExcerpt(entry.content ?? '');
 
   const rawThumbnailUrl = entry.thumbnail?.url ?? entry.metadata?.image?.url ?? '';
   const strapiCoverImageUrl = resolveMediaUrl(rawThumbnailUrl);
 
-  // Upload to Loops' CDN first — LMX rejects external image URLs
   const coverImageUrl = strapiCoverImageUrl
     ? await uploadImageToLoops(strapiCoverImageUrl)
     : null;
@@ -151,14 +168,27 @@ export async function POST(req: Request) {
 <Style />
 ${
   coverImageUrl
-    ? `<Image src="${escapeXml(coverImageUrl)}" alt="${escapeXml(postTitle)}" width="560" align="center" />`
+    ? `<Image src="${escapeXml(coverImageUrl)}" alt="${escapeXml(postTitle)}" width="560" align="center" borderRadius="12" />`
     : ''
 }
 <H1 align="center">${escapeXml(postTitle)}</H1>
 ${postExcerpt ? `<Paragraph align="center">${escapeXml(postExcerpt)}</Paragraph>` : ''}
+${
+  contentSnippet
+    ? `<Section blockColor="#F8FAFC" blockBorderRadius="12" paddingTop="16" paddingBottom="16" paddingLeft="16" paddingRight="16">
+  <Paragraph>${escapeXml(contentSnippet)}</Paragraph>
+</Section>`
+    : ''
+}
 <Button href="${escapeXml(postUrl)}" align="center" bgColor="#000000" textColor="#ffffff">
   Read the full post
-</Button>`;
+</Button>
+<Divider />
+<Section blockColor="#F8FAFC" blockBorderRadius="12" paddingTop="20" paddingBottom="20" paddingLeft="20" paddingRight="20">
+  <H3 align="center">Vijay Prakash</H3>
+  <Paragraph align="center">Software Engineer · Writing about backend systems, distributed architecture, and full-stack engineering.</Paragraph>
+  <Paragraph align="center"><Link href="${escapeXml(SITE_URL ?? '')}">vijayprakash.co.in</Link></Paragraph>
+</Section>`;
 
     const updateRes = await fetch(
       `https://app.loops.so/api/v1/email-messages/${emailMessageId}`,
