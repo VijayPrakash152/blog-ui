@@ -118,7 +118,7 @@ ${postExcerpt ? `<Paragraph align="center">${escapeXml(postExcerpt)}</Paragraph>
 
     if (!updateRes.ok) {
       console.error('Failed to update campaign content:', updateRes.status, await updateRes.text());
-      return new Response('Failed to update campaign content', { status: 502 });
+      return new Response(`Failed to update campaign content ${await updateRes.text()}`, { status: 502 });
     }
 
     return new Response('Draft campaign created — review and send in Loops', {
