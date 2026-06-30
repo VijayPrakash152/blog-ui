@@ -3,6 +3,9 @@
 const STRAPI_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 const SITE_URL = process.env.NEXT_PUBLIC_APP_URL;
 
+// Paste the finalUrl from the one-off upload script here
+const PROFILE_PHOTO_LOOPS_URL = 'https://images.vialoops.com/cmqujuuuw0tyh0j1ry1saprls/cmr0ckiw109z30j4jaq954bj0.jpg';
+
 function escapeXml(str: string): string {
   return str
     .replace(/&/g, '&amp;')
@@ -16,20 +19,26 @@ function resolveMediaUrl(url: string | undefined | null): string {
   return url.startsWith('http') ? url : `${STRAPI_BASE_URL}${url}`;
 }
 
-// Strips basic markdown syntax down to plain text, then truncates
-function markdownToPlainExcerpt(markdown: string, maxLength = 220): string {
+function markdownToPlainExcerpt(markdown: string, maxLength = 600): string {
   if (!markdown) return '';
 
   const plain = markdown
-    .replace(/!\[.*?\]\(.*?\)/g, '') // images
-    .replace(/\[(.*?)\]\(.*?\)/g, '$1') // links -> link text only
-    .replace(/[#>*_`~-]/g, '') // markdown symbols
-    .replace(/\n+/g, ' ') // collapse newlines
-    .replace(/\s+/g, ' ') // collapse whitespace
+    .replace(/!\[.*?\]\(.*?\)/g, '')
+    .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+    .replace(/[#>*_`~-]/g, '')
+    .replace(/\n+/g, ' ')
+    .replace(/\s+/g, ' ')
     .trim();
 
   if (plain.length <= maxLength) return plain;
-  return plain.slice(0, maxLength).trim() + '…';
+
+  // Try to cut at the last full sentence within the limit, not mid-word
+  const truncated = plain.slice(0, maxLength);
+  const lastPeriod = truncated.lastIndexOf('.');
+  if (lastPeriod > maxLength * 0.6) {
+    return truncated.slice(0, lastPeriod + 1);
+  }
+  return truncated.trim() + '…';
 }
 
 async function uploadImageToLoops(imageUrl: string): Promise<string | null> {
@@ -171,23 +180,30 @@ ${
     ? `<Image src="${escapeXml(coverImageUrl)}" alt="${escapeXml(postTitle)}" width="560" align="center" borderRadius="12" />`
     : ''
 }
-<H1 align="center">${escapeXml(postTitle)}</H1>
-${postExcerpt ? `<Paragraph align="center">${escapeXml(postExcerpt)}</Paragraph>` : ''}
+<H1 align="center" paddingTop="24">${escapeXml(postTitle)}</H1>
+${postExcerpt ? `<Paragraph align="center" fontSize="16" paddingBottom="8">${escapeXml(postExcerpt)}</Paragraph>` : ''}
 ${
   contentSnippet
-    ? `<Section blockColor="#F8FAFC" blockBorderRadius="12" paddingTop="16" paddingBottom="16" paddingLeft="16" paddingRight="16">
-  <Paragraph>${escapeXml(contentSnippet)}</Paragraph>
+    ? `<Section blockColor="#F8FAFC" blockBorderRadius="12" paddingTop="20" paddingBottom="20" paddingLeft="20" paddingRight="20">
+  <Paragraph fontSize="15" lineHeight="160">${escapeXml(contentSnippet)}</Paragraph>
 </Section>`
     : ''
 }
-<Button href="${escapeXml(postUrl)}" align="center" bgColor="#000000" textColor="#ffffff">
+<Button href="${escapeXml(postUrl)}" align="center" bgColor="#000000" textColor="#ffffff" paddingTop="24" paddingBottom="24">
   Read the full post
 </Button>
-<Divider />
-<Section blockColor="#F8FAFC" blockBorderRadius="12" paddingTop="20" paddingBottom="20" paddingLeft="20" paddingRight="20">
-  <H3 align="center">Vijay Prakash</H3>
-  <Paragraph align="center">Software Engineer · Writing about backend systems, distributed architecture, and full-stack engineering.</Paragraph>
-  <Paragraph align="center"><Link href="${escapeXml(SITE_URL ?? '')}">vijayprakash.co.in</Link></Paragraph>
+<Divider paddingTop="8" paddingBottom="8" />
+<Section blockColor="#F8FAFC" blockBorderRadius="12" paddingTop="24" paddingBottom="24" paddingLeft="24" paddingRight="24">
+  <Columns gap="16" widths="30,70" verticalAlignment="middle">
+    <ColumnItem>
+      <Image src="${escapeXml(PROFILE_PHOTO_LOOPS_URL)}" alt="Vijay Prakash" width="80" align="center" borderRadius="40" />
+    </ColumnItem>
+    <ColumnItem>
+      <H3>Vijay Prakash</H3>
+      <Paragraph fontSize="14">Software Engineer · Writing about backend systems, distributed architecture, and full-stack engineering.</Paragraph>
+      <Paragraph fontSize="14"><Link href="${escapeXml(SITE_URL ?? '')}">vijayprakash.co.in</Link></Paragraph>
+    </ColumnItem>
+  </Columns>
 </Section>`;
 
     const updateRes = await fetch(
