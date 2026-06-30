@@ -16,8 +16,73 @@ function resolveMediaUrl(url: string | undefined | null): string {
   return url.startsWith('http') ? url : `${STRAPI_BASE_URL}${url}`;
 }
 
+async function uploadImageToLoops(imageUrl: string): Promise<string | null> {
+  try {
+    const imageRes = await fetch(imageUrl);
+    if (!imageRes.ok) {
+      console.error('Failed to fetch source image:', imageRes.status);
+      return null;
+    }
+
+    const contentType = imageRes.headers.get('content-type') || 'image/jpeg';
+    const imageArrayBuffer = await imageRes.arrayBuffer();
+    const imageBytes = new Uint8Array(imageArrayBuffer);
+
+    const createRes = await fetch('https://app.loops.so/api/v1/uploads', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.LOOPS_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contentType,
+        contentLength: imageBytes.byteLength,
+      }),
+    });
+
+    if (!createRes.ok) {
+      console.error('Failed to create Loops upload:', createRes.status, await createRes.text());
+      return null;
+    }
+
+    const { emailAssetId, presignedUrl } = await createRes.json();
+
+    const putRes = await fetch(presignedUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': contentType,
+        'Content-Length': String(imageBytes.byteLength),
+      },
+      body: imageBytes,
+    });
+
+    if (!putRes.ok) {
+      console.error('Failed to PUT image to presigned URL:', putRes.status);
+      return null;
+    }
+
+    const completeRes = await fetch(
+      `https://app.loops.so/api/v1/uploads/${emailAssetId}/complete`,
+      {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${process.env.LOOPS_API_KEY}` },
+      }
+    );
+
+    if (!completeRes.ok) {
+      console.error('Failed to complete Loops upload:', completeRes.status, await completeRes.text());
+      return null;
+    }
+
+    const { finalUrl } = await completeRes.json();
+    return finalUrl ?? null;
+  } catch (err) {
+    console.error('Error uploading image to Loops:', err);
+    return null;
+  }
+}
+
 export async function POST(req: Request) {
-  // 1. Verify the webhook secret
   const secret = req.headers.get('x-webhook-secret');
   if (secret !== process.env.STRAPI_WEBHOOK_SECRET) {
     return new Response('Unauthorized', { status: 401 });
@@ -25,16 +90,12 @@ export async function POST(req: Request) {
 
   const payload = await req.json();
 
-  // 2. Only act on publish events for the "blog" collection
   if (payload.event !== 'entry.publish' || payload.model !== 'blog') {
     return new Response('Ignored', { status: 200 });
   }
 
   let entry = payload.entry;
 
-  // 3. Fallback: if thumbnail/metadata aren't populated in the webhook payload,
-  // fetch the full entry from Strapi's REST API with deep population.
-  // Remove this block if your test webhook payload already includes full data.
   const needsRefetch = !entry.thumbnail?.url && !entry.metadata?.description;
 
   if (needsRefetch && entry.id) {
@@ -55,16 +116,19 @@ export async function POST(req: Request) {
     }
   }
 
-  // 4. Extract the fields we need
   const postTitle: string = entry.title ?? 'New post';
   const postSlug: string = entry.slug;
   const postExcerpt: string = entry.metadata?.description ?? '';
   const postUrl = `${SITE_URL}/blog/${postSlug}`;
 
   const rawThumbnailUrl = entry.thumbnail?.url ?? entry.metadata?.image?.url ?? '';
-  const coverImageUrl = resolveMediaUrl(rawThumbnailUrl);
+  const strapiCoverImageUrl = resolveMediaUrl(rawThumbnailUrl);
 
-  // 5. Create the draft campaign
+  // Upload to Loops' CDN first — LMX rejects external image URLs
+  const coverImageUrl = strapiCoverImageUrl
+    ? await uploadImageToLoops(strapiCoverImageUrl)
+    : null;
+
   try {
     const createRes = await fetch('https://app.loops.so/api/v1/campaigns', {
       method: 'POST',
@@ -76,15 +140,15 @@ export async function POST(req: Request) {
     });
 
     if (!createRes.ok) {
-      console.error('Failed to create campaign:', createRes.status, await createRes.text());
+      const errBody = await createRes.text();
+      console.error('Failed to create campaign:', createRes.status, errBody);
       return new Response('Failed to create campaign', { status: 502 });
     }
 
     const { emailMessageId, emailMessageContentRevisionId } = await createRes.json();
 
-    // 6. Build the LMX content
     const lmxContent = `
-<Style themeId="st_default" />
+<Style />
 ${
   coverImageUrl
     ? `<Image src="${escapeXml(coverImageUrl)}" alt="${escapeXml(postTitle)}" width="560" align="center" />`
@@ -96,7 +160,6 @@ ${postExcerpt ? `<Paragraph align="center">${escapeXml(postExcerpt)}</Paragraph>
   Read the full post
 </Button>`;
 
-    // 7. Update the email message with content
     const updateRes = await fetch(
       `https://app.loops.so/api/v1/email-messages/${emailMessageId}`,
       {
@@ -117,8 +180,9 @@ ${postExcerpt ? `<Paragraph align="center">${escapeXml(postExcerpt)}</Paragraph>
     );
 
     if (!updateRes.ok) {
-      console.error('Failed to update campaign content:', updateRes.status, await updateRes.text());
-      return new Response(`Failed to update campaign content ${await updateRes.text()}`, { status: 502 });
+      const errBody = await updateRes.text();
+      console.error('Failed to update campaign content:', updateRes.status, errBody);
+      return new Response('Failed to update campaign content', { status: 502 });
     }
 
     return new Response('Draft campaign created — review and send in Loops', {
