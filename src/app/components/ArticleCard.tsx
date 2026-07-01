@@ -3,16 +3,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { Daum, Thumbnail } from "@/api/blog/blog.interface";
+import type { Blog } from '@/types';
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import makePlaceholderDataUrl from '@/utils/lqip';
 
 type ArticleCardProps = {
-  post: Daum & { contentHtml: string };
+  post: Blog & { contentHtml: string };
 };
 
-type ThumbnailWithBlur = Thumbnail & { blurDataURL?: string };
+type ThumbnailWithBlur = NonNullable<Blog['thumbnail']> & { blurDataURL?: string };
 
 export const ArticleCard = ({ post }: ArticleCardProps) => {
   const thumbnail = post.thumbnail as ThumbnailWithBlur;
@@ -45,10 +45,12 @@ export const ArticleCard = ({ post }: ArticleCardProps) => {
         <div className="flex items-center justify-between gap-4">
           <Badge variant="outline">{post.category?.name || "Uncategorized"}</Badge>
           <span className="text-xs uppercase tracking-[0.24em] text-slate-500">
-            {new Date(post.publishedAt).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            })}
+            {post.publishedAt
+              ? new Date(post.publishedAt).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                })
+              : "Unknown date"}
           </span>
         </div>
         <h3 className="text-2xl font-semibold text-white transition group-hover:text-[#7C61FF]">

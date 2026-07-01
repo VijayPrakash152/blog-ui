@@ -1,3 +1,5 @@
+import type { Subcategory } from '@/types';
+
 export interface FetchBlogsParams {
     filters?: { [key: string]: string }; // Optionally pass filters for querying blogs
     sort?: string; // Optional sorting parameter
@@ -21,6 +23,7 @@ export interface FetchBlogsParams {
     category: Category
     metadata: MetadataDto
     demoAppVideoEmbedUrl: string
+    subcategories?: Subcategory[]
   }
 
   export interface MetadataDto {

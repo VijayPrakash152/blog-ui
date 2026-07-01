@@ -1,14 +1,14 @@
 "use client";
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Daum } from "@/api/blog/blog.interface";
+import type { Blog } from "@/types";
 import { BlogFilters } from "./BlogFilters";
 import { ArticleCard } from "./ArticleCard";
 import { Pagination } from "./Pagination";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface BlogListingPageProps {
-  posts: Array<Daum & { contentHtml: string }>;
+  posts: Array<Blog & { contentHtml: string }>;
   categories: string[];
   initialPage?: number;
 }
@@ -26,9 +26,10 @@ const BlogListingPage = ({ posts = [], categories= [], initialPage = 1 }: BlogLi
     const filtered = posts.filter((post) => {
       const matchesCategory =
         selectedCategory === "All" || post.category?.name === selectedCategory;
+      const contentText = post.content ?? "";
       const matchesSearch =
         post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        post.content.toLowerCase().includes(searchQuery.toLowerCase());
+        contentText.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
 
@@ -36,8 +37,8 @@ const BlogListingPage = ({ posts = [], categories= [], initialPage = 1 }: BlogLi
       if (sort === "title") {
         return a.title.localeCompare(b.title);
       }
-      const aDate = new Date(a.publishedAt).getTime();
-      const bDate = new Date(b.publishedAt).getTime();
+      const aDate = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+      const bDate = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
       return sort === "newest" ? bDate - aDate : aDate - bDate;
     });
 
