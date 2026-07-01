@@ -4,6 +4,21 @@ const STRAPI_BASE_URL = process.env.NEXT_PUBLIC_API_URL?.trim() || 'https://api.
 
 const getApiUrl = (path: string) => new URL(path, STRAPI_BASE_URL).toString();
 
+const buildQueryString = (params: Array<[string, string | boolean | undefined]>) => {
+  const searchParams = new URLSearchParams();
+
+  params.forEach(([key, value]) => {
+    if (value === undefined || value === '') {
+      return;
+    }
+
+    searchParams.set(key, String(value));
+  });
+
+  const queryString = searchParams.toString();
+  return queryString ? `?${queryString}` : '';
+};
+
 export const resolveStrapiMediaUrl = (url?: string) => {
   if (!url) {
     return null;
@@ -41,7 +56,10 @@ interface StrapiListResponse<T> {
 
 export async function getCategories(): Promise<Category[]> {
   const data = await requestJson<StrapiListResponse<Category>>(
-    '/api/categories?sort=order:asc&populate=image',
+    `/api/categories${buildQueryString([
+      ['sort', 'order:asc'],
+      ['populate[image]', 'true'],
+    ])}`,
     { data: [] }
   );
   return data.data ?? [];
@@ -49,7 +67,10 @@ export async function getCategories(): Promise<Category[]> {
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
   const data = await requestJson<StrapiListResponse<Category>>(
-    `/api/categories?filters[slug][$eq]=${slug}&populate=image`,
+    `/api/categories${buildQueryString([
+      ['filters[slug][$eq]', slug],
+      ['populate[image]', 'true'],
+    ])}`,
     { data: [] }
   );
   return data.data?.[0] ?? null;
@@ -57,7 +78,11 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
 
 export async function getSubcategories(): Promise<Subcategory[]> {
   const data = await requestJson<StrapiListResponse<Subcategory>>(
-    '/api/subcategories?populate=image,categories&sort=order:asc',
+    `/api/subcategories${buildQueryString([
+      ['sort', 'order:asc'],
+      ['populate[image]', 'true'],
+      ['populate[categories]', 'true'],
+    ])}`,
     { data: [] }
   );
   return data.data ?? [];
@@ -65,7 +90,12 @@ export async function getSubcategories(): Promise<Subcategory[]> {
 
 export async function getSubcategoriesByCategory(categorySlug: string): Promise<Subcategory[]> {
   const data = await requestJson<StrapiListResponse<Subcategory>>(
-    `/api/subcategories?filters[categories][slug][$eq]=${categorySlug}&populate=image,categories&sort=order:asc`,
+    `/api/subcategories${buildQueryString([
+      ['filters[categories][slug][$eq]', categorySlug],
+      ['sort', 'order:asc'],
+      ['populate[image]', 'true'],
+      ['populate[categories]', 'true'],
+    ])}`,
     { data: [] }
   );
   return data.data ?? [];
@@ -73,7 +103,11 @@ export async function getSubcategoriesByCategory(categorySlug: string): Promise<
 
 export async function getSubcategoryBySlug(slug: string): Promise<Subcategory | null> {
   const data = await requestJson<StrapiListResponse<Subcategory>>(
-    `/api/subcategories?filters[slug][$eq]=${slug}&populate=image,categories`,
+    `/api/subcategories${buildQueryString([
+      ['filters[slug][$eq]', slug],
+      ['populate[image]', 'true'],
+      ['populate[categories]', 'true'],
+    ])}`,
     { data: [] }
   );
   return data.data?.[0] ?? null;
@@ -81,7 +115,12 @@ export async function getSubcategoryBySlug(slug: string): Promise<Subcategory | 
 
 export async function getBlogsByCategory(categorySlug: string): Promise<Blog[]> {
   const data = await requestJson<StrapiListResponse<Blog>>(
-    `/api/blogs?filters[category][slug][$eq]=${categorySlug}&populate=thumbnail,subcategories,metadata`,
+    `/api/blogs${buildQueryString([
+      ['filters[category][slug][$eq]', categorySlug],
+      ['populate[thumbnail]', 'true'],
+      ['populate[subcategories]', 'true'],
+      ['populate[metadata]', 'true'],
+    ])}`,
     { data: [] }
   );
   return data.data ?? [];
@@ -89,7 +128,12 @@ export async function getBlogsByCategory(categorySlug: string): Promise<Blog[]> 
 
 export async function getBlogsBySubcategory(subcategorySlug: string): Promise<Blog[]> {
   const data = await requestJson<StrapiListResponse<Blog>>(
-    `/api/blogs?filters[subcategories][slug][$eq]=${subcategorySlug}&populate=thumbnail,subcategories,metadata`,
+    `/api/blogs${buildQueryString([
+      ['filters[subcategories][slug][$eq]', subcategorySlug],
+      ['populate[thumbnail]', 'true'],
+      ['populate[subcategories]', 'true'],
+      ['populate[metadata]', 'true'],
+    ])}`,
     { data: [] }
   );
   return data.data ?? [];
