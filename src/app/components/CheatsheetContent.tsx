@@ -46,7 +46,7 @@ export const CheatsheetContent = ({ html }: CheatsheetContentProps) => {
 
   return (
     <div
-      className="prose prose-invert max-w-none prose-headings:font-semibold prose-headings:text-white prose-p:text-slate-300 prose-a:text-[#7C61FF] prose-strong:text-white prose-code:text-[#f8fafc] prose-pre:overflow-x-auto prose-pre:rounded-[1.25rem] prose-pre:border prose-pre:border-white/10 prose-pre:bg-slate-950 prose-pre:p-0 prose-pre:text-sm"
+      className="cheatsheet-content max-w-none space-y-2 text-slate-300"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );

@@ -181,6 +181,71 @@ html {
   margin: 1.5rem 0;
 }
 
+.cheatsheet-content h1,
+.cheatsheet-content h2,
+.cheatsheet-content h3,
+.cheatsheet-content h4,
+.cheatsheet-content h5,
+.cheatsheet-content h6 {
+  color: #f8fafc;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 1.75rem 0 0.75rem;
+}
+
+.cheatsheet-content h1 { font-size: 2rem; }
+.cheatsheet-content h2 { font-size: 1.5rem; }
+.cheatsheet-content h3 { font-size: 1.25rem; }
+.cheatsheet-content p,
+.cheatsheet-content li,
+.cheatsheet-content blockquote {
+  color: #cbd5e1;
+  line-height: 1.8;
+  margin: 0.75rem 0;
+}
+
+.cheatsheet-content strong {
+  color: #f8fafc;
+  font-weight: 700;
+}
+
+.cheatsheet-content a {
+  color: #7c61ff;
+  text-decoration: none;
+}
+
+.cheatsheet-content a:hover {
+  text-decoration: underline;
+}
+
+.cheatsheet-content ul,
+.cheatsheet-content ol {
+  padding-left: 1.25rem;
+}
+
+.cheatsheet-content blockquote {
+  border-left: 3px solid rgba(124, 97, 255, 0.6);
+  background: rgba(124, 97, 255, 0.08);
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
+}
+
+.cheatsheet-content pre {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.25rem;
+  overflow-x: auto;
+  padding: 1rem;
+  margin: 1rem 0;
+  position: relative;
+}
+
+.cheatsheet-content pre code {
+  display: block;
+  color: #e2e8f0;
+  white-space: pre;
+}
+
 .article-code-wrapper {
   position: relative;
   margin: 1.5rem 0;
