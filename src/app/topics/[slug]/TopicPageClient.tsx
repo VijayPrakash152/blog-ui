@@ -6,8 +6,9 @@ import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArticleCard } from '@/app/components/ArticleCard';
+import { CheatsheetCard } from '../../components/CheatsheetCard';
 import { motion } from 'framer-motion';
-import type { Blog, Subcategory } from '@/types';
+import type { Blog, Cheatsheet, Subcategory } from '@/types';
 import { resolveStrapiMediaUrl } from '@/lib/strapi';
 
 const tabs = ['Posts', 'Cheatsheets', 'Projects', 'Resources'] as const;
@@ -17,9 +18,10 @@ type TopicPagePost = Blog & { contentHtml: string };
 interface TopicPageClientProps {
   subcategory: Subcategory;
   posts: TopicPagePost[];
+  cheatsheets: Cheatsheet[];
 }
 
-const TopicPageClient = ({ subcategory, posts }: TopicPageClientProps) => {
+const TopicPageClient = ({ subcategory, posts, cheatsheets }: TopicPageClientProps) => {
   const [activeTab, setActiveTab] = useState<typeof tabs[number]>('Posts');
 
   return (
@@ -93,6 +95,16 @@ const TopicPageClient = ({ subcategory, posts }: TopicPageClientProps) => {
             ) : (
               <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-12 text-center text-slate-400 lg:col-span-2">
                 No posts are tagged with this topic yet.
+              </div>
+            )}
+          </div>
+        ) : activeTab === 'Cheatsheets' ? (
+          <div className="grid gap-6 lg:grid-cols-2">
+            {cheatsheets.length > 0 ? (
+              cheatsheets.map((cheatsheet) => <CheatsheetCard key={cheatsheet.id} cheatsheet={cheatsheet} />)
+            ) : (
+              <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-12 text-center text-slate-400 lg:col-span-2">
+                No cheatsheets are tagged with this topic yet.
               </div>
             )}
           </div>

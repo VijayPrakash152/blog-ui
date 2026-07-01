@@ -1,4 +1,4 @@
-import type { Blog, Category, Subcategory } from '@/types';
+import type { Blog, Category, Cheatsheet, Subcategory } from '@/types';
 
 const STRAPI_BASE_URL = process.env.NEXT_PUBLIC_API_URL?.trim() || 'https://api.vijayprakash.co.in';
 
@@ -133,6 +133,40 @@ export async function getBlogsBySubcategory(subcategorySlug: string): Promise<Bl
       ['populate[thumbnail]', 'true'],
       ['populate[subcategories]', 'true'],
       ['populate[metadata]', 'true'],
+    ])}`,
+    { data: [] }
+  );
+  return data.data ?? [];
+}
+
+export async function getCheatsheets(): Promise<Cheatsheet[]> {
+  const data = await requestJson<StrapiListResponse<Cheatsheet>>(
+    `/api/cheatsheets${buildQueryString([
+      ['populate', 'subcategories'],
+      ['sort', 'order:asc'],
+    ])}`,
+    { data: [] }
+  );
+  return data.data ?? [];
+}
+
+export async function getCheatsheetBySlug(slug: string): Promise<Cheatsheet | null> {
+  const data = await requestJson<StrapiListResponse<Cheatsheet>>(
+    `/api/cheatsheets${buildQueryString([
+      ['filters[slug][$eq]', slug],
+      ['populate', 'subcategories'],
+    ])}`,
+    { data: [] }
+  );
+  return data.data?.[0] ?? null;
+}
+
+export async function getCheatsheetsBySubcategory(subcategorySlug: string): Promise<Cheatsheet[]> {
+  const data = await requestJson<StrapiListResponse<Cheatsheet>>(
+    `/api/cheatsheets${buildQueryString([
+      ['filters[subcategories][slug][$eq]', subcategorySlug],
+      ['populate', 'subcategories'],
+      ['sort', 'order:asc'],
     ])}`,
     { data: [] }
   );

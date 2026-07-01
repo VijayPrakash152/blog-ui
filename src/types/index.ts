@@ -50,3 +50,13 @@ export interface Blog {
   demoAppVideoEmbedUrl?: string;
   subcategories?: Subcategory[];
 }
+
+export interface Cheatsheet {
+  id: number;
+  title: string;
+  slug: string;
+  content: string;
+  downloadUrl?: string;
+  order?: number;
+  subcategories?: Subcategory[];
+}

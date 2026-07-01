@@ -1,6 +1,6 @@
 import TopicPageClient from './TopicPageClient';
-import { getBlogsBySubcategory, getSubcategoryBySlug } from '@/lib/strapi';
-import type { Blog } from '@/types';
+import { getBlogsBySubcategory, getCheatsheetsBySubcategory, getSubcategoryBySlug } from '@/lib/strapi';
+import type { Blog, Cheatsheet } from '@/types';
 import { notFound } from 'next/navigation';
 
 interface TopicPageProps {
@@ -15,13 +15,17 @@ const TopicPage = async ({ params }: TopicPageProps) => {
     notFound();
   }
 
-  const blogs = await getBlogsBySubcategory(slug);
+  const [blogs, cheatsheets] = await Promise.all([
+    getBlogsBySubcategory(slug),
+    getCheatsheetsBySubcategory(slug),
+  ]);
+
   const posts = blogs.map((blog) => ({
     ...blog,
     contentHtml: blog.content ? blog.content.replace(/<[^>]+>/g, '').slice(0, 140) : '',
   })) as Array<Blog & { contentHtml: string }>;
 
-  return <TopicPageClient subcategory={subcategory} posts={posts} />;
+  return <TopicPageClient subcategory={subcategory} posts={posts} cheatsheets={cheatsheets as Cheatsheet[]} />;
 };
 
 export async function generateStaticParams() {
