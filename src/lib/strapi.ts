@@ -118,6 +118,7 @@ export async function getBlogsByCategory(categorySlug: string): Promise<Blog[]> 
     `/api/blogs${buildQueryString([
       ['filters[category][slug][$eq]', categorySlug],
       ['populate[thumbnail]', 'true'],
+      ['populate[category]', 'true'],
       ['populate[subcategories]', 'true'],
       ['populate[metadata]', 'true'],
     ])}`,
@@ -131,6 +132,7 @@ export async function getBlogsBySubcategory(subcategorySlug: string): Promise<Bl
     `/api/blogs${buildQueryString([
       ['filters[subcategories][slug][$eq]', subcategorySlug],
       ['populate[thumbnail]', 'true'],
+      ['populate[category]', 'true'],
       ['populate[subcategories]', 'true'],
       ['populate[metadata]', 'true'],
     ])}`,
