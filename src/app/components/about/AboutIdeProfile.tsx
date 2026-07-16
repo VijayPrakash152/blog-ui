@@ -4,6 +4,8 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { SectionHeader } from "@/components/ui/section-header";
+import TechStackSection from "./TechStackSection";
+import { TECH_STACK_BY_CATEGORY } from "./tech-stack-data";
 
 interface AboutIdeProfileProps {
   name: string;
@@ -14,84 +16,12 @@ interface AboutIdeProfileProps {
 
 type FileTab = "about.md" | "developer.ts" | "preview";
 
-const TECH_STACK_BY_CATEGORY = [
-  {
-    category: "Frontend",
-    items: ["React.js", "React Native", "Next.js", "TypeScript", "JavaScript", "HTML5", "CSS3", "Tailwind CSS", "Redux Toolkit", "Context API", "TanStack Query", "React Router", "Storybook", "shadcn/ui", "Framer Motion"],
-  },
-  {
-    category: "Backend",
-    items: ["Node.js", "NestJS", "Express.js", "BFF", "REST APIs", "Serverless APIs", "Firebase Functions"],
-  },
-  {
-    category: "Mobile",
-    items: ["React Native", "Expo", "Native Module Integration"],
-  },
-  {
-    category: "Databases",
-    items: ["PostgreSQL", "MySQL", "MongoDB", "Firebase Firestore", "Redis"],
-  },
-  {
-    category: "Cloud & Infra",
-    items: ["AWS Lambda", "API Gateway", "Amazon S3", "CloudFront", "Firebase", "Azure Cloud", "Docker", "Kubernetes", "Nginx"],
-  },
-  {
-    category: "CMS",
-    items: ["Strapi CMS", "Headless CMS Architecture"],
-  },
-  {
-    category: "AI & Voice",
-    items: ["Azure Speech-to-Text", "Azure Text-to-Speech", "ElevenLabs", "Sarvam AI", "AI Voice Applications", "Speech Processing", "Conversational AI"],
-  },
-  {
-    category: "DevOps & CI/CD",
-    items: ["Docker", "Kubernetes", "GitHub Actions", "Jenkins", "CI/CD Pipelines", "Monorepos", "Turborepo"],
-  },
-  {
-    category: "Architecture",
-    items: ["Monorepo Architecture", "Micro Frontends", "BFF", "Component-Driven Development", "Design Systems", "Responsive Design", "Accessibility", "System Design"],
-  },
-  {
-    category: "Testing & Quality",
-    items: ["Jest", "React Testing Library", "Postman", "ESLint", "Prettier", "Husky", "lint-staged", "Pre-commit Hooks"],
-  },
-  {
-    category: "Messaging",
-    items: ["Redis", "Kafka", "RabbitMQ"],
-  },
-  {
-    category: "Auth & Security",
-    items: ["JWT", "OAuth 2.0", "Firebase Authentication", "RBAC"],
-  },
-  {
-    category: "Developer Tools",
-    items: ["Git", "GitHub", "Bitbucket", "VS Code", "npm", "pnpm", "Yarn", "Verdaccio"],
-  },
-  {
-    category: "Build & Tooling",
-    items: ["Vite", "Webpack", "Babel", "Turbo", "SWC"],
-  },
-  {
-    category: "API Development",
-    items: ["REST APIs", "OpenAPI", "Swagger", "JSON", "Axios", "Fetch API"],
-  },
-  {
-    category: "Performance",
-    items: ["Code Splitting", "Lazy Loading", "SSR", "SSG", "ISR", "Caching Strategies", "Bundle Optimization", "Lighthouse Optimization"],
-  },
-  {
-    category: "Strongest",
-    items: ["React.js", "React Native", "TypeScript", "Node.js", "NestJS", "BFF", "Design Systems", "Monorepos", "Firebase", "Docker", "Kubernetes", "AWS Lambda", "Azure AI Speech", "Strapi CMS", "Full Stack Development"],
-  },
-];
-
 const cleanLine = (line: string) => line.replace(/^[-*]\s*/, "").trim();
 
 const AboutIdeProfile = ({ name, role, markdown, html }: AboutIdeProfileProps) => {
   const [activeFile, setActiveFile] = useState<FileTab>("about.md");
   const [commandIndex, setCommandIndex] = useState(0);
   const [typedCommand, setTypedCommand] = useState("");
-  const [activeTechCategory, setActiveTechCategory] = useState<string | null>(TECH_STACK_BY_CATEGORY[0]?.category ?? null);
   const reduceMotion = useReducedMotion();
 
   const markdownLines = useMemo(() => markdown.split("\n"), [markdown]);
@@ -186,20 +116,6 @@ const AboutIdeProfile = ({ name, role, markdown, html }: AboutIdeProfileProps) =
   }, [name, role, timelineLines, technologies]);
 
   const codeLines = activeFile === "about.md" ? markdownLines : devObjectSnippet;
-
-  const activeTechBogie = useMemo(
-    () => TECH_STACK_BY_CATEGORY.find((item) => item.category === activeTechCategory) || TECH_STACK_BY_CATEGORY[0],
-    [activeTechCategory]
-  );
-
-  const ballThemes = [
-    "from-[#7C61FF] to-[#4E3CFF]",
-    "from-[#17D2B9] to-[#0ea89a]",
-    "from-[#82aaff] to-[#5a7bff]",
-    "from-[#f78c6c] to-[#f25f3a]",
-    "from-[#c792ea] to-[#9d6ad9]",
-    "from-[#f07178] to-[#d94a62]",
-  ];
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#05070B] text-white">
@@ -333,85 +249,7 @@ const AboutIdeProfile = ({ name, role, markdown, html }: AboutIdeProfileProps) =
       {technologies.length > 0 ? (
         <section className="relative px-6 py-4 sm:px-10 lg:px-16">
           <div className="mx-auto max-w-7xl">
-            <Card className="rounded-xl border border-white/10 bg-[#0B1220] p-6" hoverable={false}>
-              <p className="text-xs uppercase tracking-[0.24em] text-[#7C61FF]">Tech Stack</p>
-              <p className="mt-2 text-xs text-slate-400">Hover, focus, or tap a category orb to inspect its technology blocks.</p>
-
-              <div className="relative mt-6 flex min-h-[42rem] items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-[#060A14] p-4">
-                <div className="pointer-events-none absolute h-[76%] w-[92%] rounded-[50%] border border-[#7C61FF]/35" />
-                <div className="pointer-events-none absolute h-[70%] w-[86%] rounded-[50%] border border-white/10" />
-
-                <motion.div
-                  className="relative h-[36rem] w-full max-w-[68rem]"
-                  animate={reduceMotion ? undefined : { rotate: 360 }}
-                  transition={reduceMotion ? undefined : { duration: 120, repeat: Infinity, ease: "linear" }}
-                >
-                  {TECH_STACK_BY_CATEGORY.map((bogie, index) => {
-                    const angle = (index / TECH_STACK_BY_CATEGORY.length) * Math.PI * 2;
-                    const radiusX = 45;
-                    const radiusY = 33;
-                    const x = 50 + radiusX * Math.cos(angle);
-                    const y = 50 + radiusY * Math.sin(angle);
-                    const theme = ballThemes[index % ballThemes.length];
-                    const isActive = activeTechBogie?.category === bogie.category;
-
-                    return (
-                      <motion.div
-                        key={bogie.category}
-                        className="absolute -translate-x-1/2 -translate-y-1/2"
-                        style={{ left: `${x}%`, top: `${y}%` }}
-                        animate={reduceMotion ? undefined : { rotate: -360 }}
-                        transition={reduceMotion ? undefined : { duration: 120, repeat: Infinity, ease: "linear" }}
-                      >
-                        <button
-                          type="button"
-                          aria-label={`${bogie.category} tech stack`}
-                          aria-haspopup="dialog"
-                          onMouseEnter={() => setActiveTechCategory(bogie.category)}
-                          onFocus={() => setActiveTechCategory(bogie.category)}
-                          onClick={() => setActiveTechCategory(bogie.category)}
-                          className={`group relative flex h-24 w-24 items-center justify-center rounded-full border text-center shadow-[0_8px_24px_rgba(3,8,20,0.45)] transition ${
-                            isActive ? "scale-105 border-white/50" : "border-white/20 hover:scale-105"
-                          } bg-gradient-to-br ${theme}`}
-                        >
-                          <span className="absolute inset-1 rounded-full bg-[#0B1220]/35 backdrop-blur-sm" />
-                          <span className="relative px-2 text-[11px] font-semibold uppercase leading-tight tracking-[0.08em] text-white">
-                            {bogie.category}
-                          </span>
-                        </button>
-                      </motion.div>
-                    );
-                  })}
-                </motion.div>
-
-                {activeTechBogie ? (
-                  <motion.div
-                    key={activeTechBogie.category}
-                    initial={reduceMotion ? undefined : { opacity: 0, y: 8, scale: 0.98 }}
-                    animate={reduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
-                    transition={{ duration: 0.2 }}
-                    role="dialog"
-                    aria-label={`${activeTechBogie.category} technologies`}
-                    className="absolute z-20 w-[92%] max-w-xl rounded-2xl border border-[#7C61FF]/35 bg-[#0B1220]/95 p-5 shadow-[0_18px_42px_rgba(6,10,24,0.55)] backdrop-blur"
-                  >
-                    <div className="mb-3 flex items-center justify-between">
-                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#7C61FF]">{activeTechBogie.category}</p>
-                      <span className="text-xs text-slate-400">{activeTechBogie.items.length} technologies</span>
-                    </div>
-                    <div className="flex max-h-48 flex-wrap gap-2 overflow-auto pr-1">
-                      {activeTechBogie.items.map((tech) => (
-                        <span
-                          key={`${activeTechBogie.category}-${tech}`}
-                          className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs text-slate-200"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </motion.div>
-                ) : null}
-              </div>
-            </Card>
+            <TechStackSection categories={TECH_STACK_BY_CATEGORY} />
           </div>
         </section>
       ) : null}
