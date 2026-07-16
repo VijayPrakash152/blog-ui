@@ -39,6 +39,102 @@ const TECH_CATALOG = [
   "CI/CD",
 ];
 
+const TECH_SECTION_HINT = /(technical skills|skills|tech stack|backend|frontend|programming|cloud|infrastructure|technolog|stack)/i;
+
+const TECH_ALIASES: Record<string, string> = {
+  "react.js": "React",
+  reactjs: "React",
+  "node.js": "Node.js",
+  nodejs: "Node.js",
+  javascript: "JavaScript",
+  typescript: "TypeScript",
+  "tailwindcss": "Tailwind CSS",
+  "scss": "SCSS",
+  "html": "HTML",
+  "css": "CSS",
+  "google big query": "Google BigQuery",
+  "big query": "BigQuery",
+  kubernetes: "Kubernetes",
+  postgres: "Postgres",
+  mongodb: "MongoDB",
+  redis: "Redis",
+  kafka: "Kafka",
+  firebase: "Firebase",
+  azure: "Azure",
+  aws: "AWS",
+  "cicd": "CI/CD",
+};
+
+const normalizeTech = (value: string) => {
+  const cleaned = value
+    .trim()
+    .replace(/^[-*]\s*/, "")
+    .replace(/^and\s+/i, "")
+    .replace(/[.]$/, "")
+    .replace(/\s{2,}/g, " ");
+
+  const alias = TECH_ALIASES[cleaned.toLowerCase()];
+  return alias || cleaned;
+};
+
+const extractTechnologiesFromMarkdown = (markdown: string) => {
+  const lines = markdown.split("\n");
+  const result: string[] = [];
+  const seen = new Set<string>();
+
+  const add = (value: string) => {
+    const normalized = normalizeTech(value);
+    if (!normalized || normalized.length < 2) {
+      return;
+    }
+
+    if (!/[a-zA-Z]/.test(normalized)) {
+      return;
+    }
+
+    const key = normalized.toLowerCase();
+    if (seen.has(key)) {
+      return;
+    }
+
+    seen.add(key);
+    result.push(normalized);
+  };
+
+  for (const rawLine of lines) {
+    const line = cleanLine(rawLine);
+    if (!line) {
+      continue;
+    }
+
+    const shouldParse = TECH_SECTION_HINT.test(line) || /\b(React|Node|TypeScript|JavaScript|AWS|Azure|Docker|Kubernetes|NestJS|MongoDB|Postgres|Redis|Kafka|Firebase)\b/i.test(line);
+    if (!shouldParse) {
+      continue;
+    }
+
+    const afterColon = line.includes(":") ? line.split(":").slice(1).join(":") : line;
+    const primaryParts = afterColon.split(/,|;|\||•/g).map((part) => part.trim()).filter(Boolean);
+
+    primaryParts.forEach((part) => {
+      const main = part.replace(/\(.*?\)/g, "").trim();
+      if (main) {
+        add(main);
+      }
+
+      const parenMatches = Array.from(part.matchAll(/\((.*?)\)/g)).map((m) => m[1]);
+      parenMatches.forEach((group) => {
+        group
+          .split(/,|\//g)
+          .map((entry) => entry.trim())
+          .filter(Boolean)
+          .forEach(add);
+      });
+    });
+  }
+
+  return result;
+};
+
 const cleanLine = (line: string) => line.replace(/^[-*]\s*/, "").trim();
 
 const AboutIdeProfile = ({ name, role, markdown, html }: AboutIdeProfileProps) => {
@@ -50,7 +146,13 @@ const AboutIdeProfile = ({ name, role, markdown, html }: AboutIdeProfileProps) =
   const markdownLines = useMemo(() => markdown.split("\n"), [markdown]);
 
   const technologies = useMemo(() => {
-    return TECH_CATALOG.filter((tech) => new RegExp(`\\b${tech.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&")}\\b`, "i").test(markdown));
+    const extracted = extractTechnologiesFromMarkdown(markdown);
+    const fromCatalog = TECH_CATALOG.filter((tech) => new RegExp(`\\b${tech.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&")}\\b`, "i").test(markdown));
+
+    const merged = [...extracted, ...fromCatalog.map(normalizeTech)];
+    return Array.from(new Set(merged.map((item) => item.toLowerCase()))).map((key) => {
+      return merged.find((item) => item.toLowerCase() === key) as string;
+    });
   }, [markdown]);
 
   const timelineLines = useMemo(() => {
@@ -141,7 +243,7 @@ const AboutIdeProfile = ({ name, role, markdown, html }: AboutIdeProfileProps) =
           <SectionHeader
             label="About"
             title="Developer Workspace"
-            description="Markdown remains the source of truth. This is an interactive IDE-style view of the same profile content."
+            description="Browse my professional journey in a code-first workspace that reflects how I build software."
           />
 
           <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
