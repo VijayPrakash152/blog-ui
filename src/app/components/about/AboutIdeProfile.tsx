@@ -211,14 +211,14 @@ const AboutIdeProfile = ({ name, role, markdown, html }: AboutIdeProfileProps) =
         <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <Card className="rounded-xl border border-white/10 bg-[#0B1220] p-6" hoverable={false}>
             <p className="text-xs uppercase tracking-[0.24em] text-[#7C61FF]">Terminal</p>
-            <div className="mt-4 rounded-lg border border-white/10 bg-[#060A14] p-4 font-mono text-sm text-slate-200">
-              <p className="text-emerald-300">
+            <div className="mt-4 h-[176px] overflow-hidden rounded-lg border border-white/10 bg-[#060A14] p-4 font-mono text-sm text-slate-200">
+              <p className="overflow-hidden text-emerald-300 whitespace-nowrap text-ellipsis">
                 <span className="text-[#7C61FF]">vijay@workspace</span>:~$ {typedCommand}
                 <span className="ml-1 inline-block h-4 w-[2px] animate-pulse bg-white/70 align-middle" aria-hidden="true" />
               </p>
-              <div className="mt-3 space-y-1 text-slate-300">
+              <div className="mt-3 h-[120px] overflow-auto space-y-1 text-slate-300">
                 {commands[commandIndex].output.map((line) => (
-                  <p key={line}>{line}</p>
+                  <p key={line} className="overflow-hidden whitespace-nowrap text-ellipsis">{line}</p>
                 ))}
               </div>
             </div>
