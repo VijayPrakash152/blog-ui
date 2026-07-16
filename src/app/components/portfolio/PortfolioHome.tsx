@@ -8,6 +8,7 @@ import { Container } from "@/components/ui/container";
 import { SectionHeader } from "@/components/ui/section-header";
 import { cn } from "@/lib/utils";
 import type { Daum } from "@/api/blog/blog.interface";
+import NewsletterModal from "@/app/components/NewsletterModal";
 
 interface PortfolioHomeProps {
   posts: Array<Daum & { contentHtml: string }>;
@@ -16,56 +17,65 @@ interface PortfolioHomeProps {
 const careerSteps = [
   {
     title: "Graduation",
-    subtitle: "B.Tech in Computer Science",
-    detail: "Built the foundation in software engineering and problem solving at NIT Durgapur.",
+    subtitle: "B.Tech, Civil Engineering",
+    detail: "Built a strong analytical foundation at NIT Durgapur and completed the degree in 2021 with a strong GPA.",
   },
   {
-    title: "First Engineer",
-    subtitle: "Software engineering foundations",
-    detail: "Started shaping product experiences with modern web technologies and resilient architecture.",
+    title: "Engineering Intern",
+    subtitle: "Mathongo",
+    detail: "Worked on OCR and analytics experiences while strengthening backend and product engineering fundamentals.",
   },
   {
-    title: "Full Stack Engineer",
-    subtitle: "Product and platform delivery",
-    detail: "Expanded across frontend, backend, and systems thinking while shipping user-facing products.",
+    title: "Software Engineer",
+    subtitle: "Wipro",
+    detail: "Delivered MERN-based applications with secure authentication, CI/CD, and modern delivery practices.",
   },
   {
-    title: "Modern Web Systems",
-    subtitle: "React, Next.js, APIs",
-    detail: "Focused on polished interfaces, scalable architecture, and high-quality developer experience.",
+    title: "Product Engineer",
+    subtitle: "ElevateHQ and Medi Assist",
+    detail: "Expanded into scalable microservices, performance tuning, cloud deployment, and resilient product systems.",
   },
   {
     title: "Current Role",
-    subtitle: "Cigna Healthcare International Health",
-    detail: "Building dependable digital experiences with modern engineering practices and thoughtful design.",
+    subtitle: "Senior Analyst – Software Engineering at Cigna Healthcare",
+    detail: "Building full-stack healthcare applications with React, React Native, Node.js, AWS, and Kubernetes.",
   },
 ];
 
 const skills = [
-  { category: "Frontend", items: ["React", "Next.js", "TypeScript", "Tailwind CSS"] },
-  { category: "Backend", items: ["Node.js", "Java", "REST APIs", "Spring"] },
-  { category: "Platform", items: ["AWS", "CI/CD", "Microservices", "Performance"] },
-  { category: "Product", items: ["Design systems", "Accessibility", "UX engineering", "Mentorship"] },
+  { category: "Frontend", items: ["React", "TypeScript", "Redux", "Tailwind CSS", "Storybook"] },
+  { category: "Backend", items: ["NestJS", "Node.js", "Java", "REST APIs", "Redis", "Kafka"] },
+  { category: "Platform", items: ["AWS", "Docker", "Kubernetes", "Firebase", "Postgres", "MongoDB"] },
+  { category: "AI & Product", items: ["Speech STT/TTS", "Azure", "Microfrontend", "Design systems", "Accessibility"] },
 ];
 
 const experience = [
   {
-    company: "Cigna Healthcare International Health",
-    role: "Software Engineer",
-    duration: "2021 — Present",
+    company: "Cigna Healthcare",
+    role: "Senior Analyst – Software Engineering",
+    duration: "Jul 2026 — Present",
     description:
-      "Designing and delivering resilient web experiences while collaborating closely with product, engineering, and design teams.",
-    technologies: ["React", "Next.js", "TypeScript", "Java"],
-    achievements: ["Improved product experience quality", "Collaborated on design system evolution", "Delivered reliable platform features"],
+      "Designing and developing scalable, secure healthcare applications across web and mobile with full-stack engineering practices.",
+    technologies: ["React", "React Native", "Node.js", "AWS Lambda", "Kubernetes"],
+    achievements: ["Built BFF services", "Worked in monorepo architecture", "Integrated Firebase and CMS-driven experiences"],
   },
   {
-    company: "Independent Engineering Work",
-    role: "Frontend & Full Stack Builder",
-    duration: "2019 — 2021",
+    company: "Havells",
+    role: "Research Engineer",
+    duration: "Apr 2026 — Jul 2026",
     description:
-      "Shipped modern interfaces and practical solutions for products that needed thoughtful engineering and polished UX.",
-    technologies: ["React", "Node.js", "Tailwind CSS", "REST APIs"],
-    achievements: ["Built reusable UI patterns", "Improved development velocity", "Created maintainable product experiences"],
+      "Built AI-powered voice and communications systems using speech, cloud, and integration technologies for intelligent user experiences.",
+    technologies: ["Azure", "STT", "TTS", "ElevenLabs", "Sarvam AI"],
+    achievements: ["Built voice-enabled workflows", "Integrated AI notification systems", "Evaluated emerging AI APIs"],
+  },
+  {
+    company: "Medi Assist",
+    role: "Software Engineer II",
+    duration: "May 2023 — Mar 2026",
+    description:
+      "Led healthtech and insurtech application optimization across frontend, backend, infrastructure, and performance engineering.",
+    technologies: ["React", "NestJS", "Docker", "Kubernetes", "AWS"],
+    achievements: ["Improved performance and reliability", "Implemented microfrontend architecture", "Built centralized configuration services"],
   },
 ];
 
@@ -88,9 +98,9 @@ const projects = [
 
 const stats = [
   { value: "5+", label: "Years building" },
-  { value: "20+", label: "Product experiences" },
+  { value: "20+", label: "Product solutions" },
   { value: "8+", label: "Core technologies" },
-  { value: "100+", label: "Articles read" },
+  { value: "1", label: "Newsletter community" },
 ];
 
 const PortfolioHome = ({ posts }: PortfolioHomeProps) => {
@@ -128,14 +138,7 @@ const PortfolioHome = ({ posts }: PortfolioHomeProps) => {
                 >
                   View profile <MoveRight className="ml-2 h-4 w-4" />
                 </a>
-                <a
-                  href="mailto:vijayprakash152@gmail.com"
-                  className={cn(
-                    "inline-flex h-12 items-center justify-center rounded-full border border-white/10 bg-white/5 px-6 text-sm font-semibold text-slate-100 transition duration-200 hover:bg-white/10"
-                  )}
-                >
-                  Contact me
-                </a>
+                <NewsletterModal />
               </div>
             </div>
 

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
+import Image from "next/image";
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -21,9 +22,13 @@ const Header = () => {
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#070A11]/90 text-white backdrop-blur-xl">
       <Container className="relative flex items-center justify-between gap-8 py-4">
         <Link href="/" className="inline-flex items-center gap-3 text-lg font-semibold tracking-wide text-white transition hover:text-[#7C61FF]">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#7C61FF]/20 bg-[#7C61FF]/10 text-sm font-semibold text-[#7C61FF]">
-            VP
-          </div>
+          <Image
+            src="/logo.png"
+            alt="Vijay Prakash logo"
+            width={40}
+            height={40}
+            className="h-10 w-10 rounded-2xl object-cover"
+          />
           Vijay Prakash
         </Link>
 
