@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { SectionHeader } from "@/components/ui/section-header";
 import TechStackSection from "./TechStackSection";
@@ -115,6 +116,27 @@ const AboutIdeProfile = ({ name, role, markdown, html }: AboutIdeProfileProps) =
     ];
   }, [name, role, timelineLines, technologies]);
 
+  const binaryRows = useMemo(
+    () =>
+      Array.from({ length: 14 }, (_, row) =>
+        Array.from({ length: 18 }, (_, col) => ((row * 7 + col * 13 + name.length + role.length) % 2 === 0 ? "1" : "0")).join("")
+      ),
+    [name.length, role.length]
+  );
+
+  const floatingBits = useMemo(
+    () =>
+      Array.from({ length: 28 }, (_, index) => ({
+        id: index,
+        bit: index % 2 === 0 ? "1" : "0",
+        left: `${(index * 17) % 100}%`,
+        top: `${(index * 29) % 100}%`,
+        delay: (index % 8) * 0.16,
+        duration: 2.6 + (index % 5) * 0.35,
+      })),
+    []
+  );
+
   const codeLines = activeFile === "about.md" ? markdownLines : devObjectSnippet;
 
   return (
@@ -124,6 +146,144 @@ const AboutIdeProfile = ({ name, role, markdown, html }: AboutIdeProfileProps) =
 
       <section className="relative border-b border-white/10 px-6 py-12 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-7xl space-y-8">
+          <motion.div
+            initial={reduceMotion ? undefined : { opacity: 0, y: -10 }}
+            animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: "easeOut" }}
+            className="mx-auto flex w-full max-w-xl justify-center"
+          >
+            <div className="group relative h-[290px] w-[290px] sm:h-[320px] sm:w-[320px]">
+              <motion.div
+                aria-hidden="true"
+                className="absolute inset-0 rounded-[2rem] border border-[#17D2B9]/30"
+                animate={reduceMotion ? undefined : { scale: [0.98, 1.02, 0.98], opacity: [0.45, 0.85, 0.45] }}
+                transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
+              />
+
+              <motion.div
+                aria-hidden="true"
+                className="absolute inset-2 rounded-[1.9rem] border border-[#7C61FF]/25 mix-blend-screen"
+                animate={reduceMotion ? undefined : { opacity: [0.12, 0.4, 0.12], rotate: [0, 0.3, -0.3, 0] }}
+                transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+              />
+
+              <div className="absolute inset-4 overflow-hidden rounded-[1.6rem] border border-white/10 bg-[#08101C]">
+                <Image
+                  src="/profile-picture.jpg"
+                  alt={`${name} profile picture`}
+                  fill
+                  priority
+                  sizes="(max-width: 640px) 260px, 300px"
+                  className="object-cover saturate-90 transition duration-700 group-hover:scale-[1.04] group-hover:saturate-110"
+                />
+
+                <motion.div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 opacity-0 mix-blend-screen transition-opacity duration-200 group-hover:opacity-80"
+                  style={{
+                    backgroundImage: "url('/profile-picture.jpg')",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    filter: "contrast(1.1) saturate(1.2)",
+                  }}
+                  animate={reduceMotion ? undefined : { x: [0, -2, 1, -1, 0], y: [0, 1, 0, -1, 0] }}
+                  transition={{ duration: 0.42, repeat: Infinity, ease: "linear" }}
+                >
+                  <div className="h-full w-full bg-[#ff2b6f]/35" />
+                </motion.div>
+
+                <motion.div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 opacity-0 mix-blend-screen transition-opacity duration-200 group-hover:opacity-75"
+                  style={{
+                    backgroundImage: "url('/profile-picture.jpg')",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    filter: "contrast(1.08) saturate(1.25)",
+                  }}
+                  animate={reduceMotion ? undefined : { x: [0, 2, -1, 1, 0], y: [0, -1, 0, 1, 0] }}
+                  transition={{ duration: 0.4, repeat: Infinity, ease: "linear" }}
+                >
+                  <div className="h-full w-full bg-[#00e8ff]/30" />
+                </motion.div>
+
+                <motion.div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 mix-blend-screen"
+                  style={{
+                    background:
+                      "linear-gradient(90deg,rgba(124,97,255,0.08) 0%,rgba(124,97,255,0) 20%,rgba(23,210,185,0.14) 52%,rgba(23,210,185,0) 82%,rgba(124,97,255,0.1) 100%)",
+                  }}
+                  animate={reduceMotion ? undefined : { x: ["-12%", "12%", "-12%"] }}
+                  transition={{ duration: 6.4, repeat: Infinity, ease: "easeInOut" }}
+                />
+
+                <motion.div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,transparent_0%,rgba(255,255,255,0.14)_50%,transparent_100%)] opacity-20"
+                  animate={reduceMotion ? undefined : { y: ["-100%", "160%"] }}
+                  transition={{ duration: 3.6, repeat: Infinity, ease: "linear" }}
+                />
+
+                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(5,7,11,0.05)_0%,rgba(5,7,11,0.45)_100%)]" />
+
+                <div className="pointer-events-none absolute inset-0 flex flex-col justify-between p-3 font-mono text-[10px] leading-4 text-emerald-200/55">
+                  {binaryRows.map((line, index) => (
+                    <motion.p
+                      key={`${line}-${index}`}
+                      initial={reduceMotion ? undefined : { opacity: 0.2, x: -8 }}
+                      animate={reduceMotion ? undefined : { opacity: [0.2, 0.7, 0.2], x: [0, 2, 0] }}
+                      transition={{ duration: 2.4, repeat: Infinity, delay: index * 0.05 }}
+                    >
+                      {line}
+                    </motion.p>
+                  ))}
+                </div>
+
+                <motion.div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-x-0 h-10 bg-gradient-to-b from-[#17D2B9]/25 to-transparent"
+                  animate={reduceMotion ? undefined : { y: [0, 230, 0] }}
+                  transition={{ duration: 4.8, repeat: Infinity, ease: "linear" }}
+                />
+
+                <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(to_bottom,rgba(255,255,255,0.06)_0px,rgba(255,255,255,0.06)_1px,transparent_1px,transparent_3px)] opacity-15" />
+
+                <motion.div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-[#7C61FF]/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  animate={reduceMotion ? undefined : { x: [0, -6, 0] }}
+                  transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+                />
+              </div>
+
+              <div className="pointer-events-none absolute inset-0">
+                {floatingBits.map((item) => (
+                  <motion.span
+                    key={item.id}
+                    className="absolute font-mono text-xs text-[#17D2B9]/60"
+                    style={{ left: item.left, top: item.top }}
+                    animate={
+                      reduceMotion
+                        ? undefined
+                        : {
+                            y: [0, -10, 0],
+                            opacity: [0.3, 0.9, 0.3],
+                          }
+                    }
+                    transition={{ duration: item.duration, repeat: Infinity, delay: item.delay, ease: "easeInOut" }}
+                  >
+                    {item.bit}
+                  </motion.span>
+                ))}
+              </div>
+
+              <div className="pointer-events-none absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-[#17D2B9]/30 bg-[#05070B]/80 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.22em] text-[#17D2B9]">
+                010101 profile decoded
+              </div>
+            </div>
+          </motion.div>
+
           <SectionHeader
             label="About"
             title="Developer Workspace"
