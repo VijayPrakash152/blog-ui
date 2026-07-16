@@ -102,7 +102,7 @@ const BlogPostComponent = ({ blog, relatedPosts }: BlogPostComponentProps) => {
             </div>
 
             <div className="flex flex-col gap-6 px-1 sm:px-0">
-              <Link href="/" className="inline-flex items-center gap-2 text-sm text-slate-400 transition hover:text-white">
+              <Link href="/posts" className="inline-flex items-center gap-2 text-sm text-slate-400 transition hover:text-white">
                 <ChevronLeft className="h-4 w-4" />
                 Back to posts
               </Link>
