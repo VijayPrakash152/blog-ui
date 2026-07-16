@@ -14,126 +14,76 @@ interface AboutIdeProfileProps {
 
 type FileTab = "about.md" | "developer.ts" | "preview";
 
-const TECH_CATALOG = [
-  "React",
-  "Next.js",
-  "TypeScript",
-  "JavaScript",
-  "Node.js",
-  "NestJS",
-  "Redux",
-  "Tailwind CSS",
-  "Storybook",
-  "Docker",
-  "Kubernetes",
-  "AWS",
-  "Azure",
-  "Postgres",
-  "MongoDB",
-  "Redis",
-  "Kafka",
-  "Firebase",
-  "Strapi",
-  "React Native",
-  "MERN",
-  "CI/CD",
+const TECH_STACK_BY_CATEGORY = [
+  {
+    category: "Frontend",
+    items: ["React.js", "React Native", "Next.js", "TypeScript", "JavaScript", "HTML5", "CSS3", "Tailwind CSS", "Redux Toolkit", "Context API", "TanStack Query", "React Router", "Storybook", "shadcn/ui", "Framer Motion"],
+  },
+  {
+    category: "Backend",
+    items: ["Node.js", "NestJS", "Express.js", "BFF", "REST APIs", "Serverless APIs", "Firebase Functions"],
+  },
+  {
+    category: "Mobile",
+    items: ["React Native", "Expo", "Native Module Integration"],
+  },
+  {
+    category: "Databases",
+    items: ["PostgreSQL", "MySQL", "MongoDB", "Firebase Firestore", "Redis"],
+  },
+  {
+    category: "Cloud & Infra",
+    items: ["AWS Lambda", "API Gateway", "Amazon S3", "CloudFront", "Firebase", "Azure Cloud", "Docker", "Kubernetes", "Nginx"],
+  },
+  {
+    category: "CMS",
+    items: ["Strapi CMS", "Headless CMS Architecture"],
+  },
+  {
+    category: "AI & Voice",
+    items: ["Azure Speech-to-Text", "Azure Text-to-Speech", "ElevenLabs", "Sarvam AI", "AI Voice Applications", "Speech Processing", "Conversational AI"],
+  },
+  {
+    category: "DevOps & CI/CD",
+    items: ["Docker", "Kubernetes", "GitHub Actions", "Jenkins", "CI/CD Pipelines", "Monorepos", "Turborepo"],
+  },
+  {
+    category: "Architecture",
+    items: ["Monorepo Architecture", "Micro Frontends", "BFF", "Component-Driven Development", "Design Systems", "Responsive Design", "Accessibility", "System Design"],
+  },
+  {
+    category: "Testing & Quality",
+    items: ["Jest", "React Testing Library", "Postman", "ESLint", "Prettier", "Husky", "lint-staged", "Pre-commit Hooks"],
+  },
+  {
+    category: "Messaging",
+    items: ["Redis", "Kafka", "RabbitMQ"],
+  },
+  {
+    category: "Auth & Security",
+    items: ["JWT", "OAuth 2.0", "Firebase Authentication", "RBAC"],
+  },
+  {
+    category: "Developer Tools",
+    items: ["Git", "GitHub", "Bitbucket", "VS Code", "npm", "pnpm", "Yarn", "Verdaccio"],
+  },
+  {
+    category: "Build & Tooling",
+    items: ["Vite", "Webpack", "Babel", "Turbo", "SWC"],
+  },
+  {
+    category: "API Development",
+    items: ["REST APIs", "OpenAPI", "Swagger", "JSON", "Axios", "Fetch API"],
+  },
+  {
+    category: "Performance",
+    items: ["Code Splitting", "Lazy Loading", "SSR", "SSG", "ISR", "Caching Strategies", "Bundle Optimization", "Lighthouse Optimization"],
+  },
+  {
+    category: "Strongest",
+    items: ["React.js", "React Native", "TypeScript", "Node.js", "NestJS", "BFF", "Design Systems", "Monorepos", "Firebase", "Docker", "Kubernetes", "AWS Lambda", "Azure AI Speech", "Strapi CMS", "Full Stack Development"],
+  },
 ];
-
-const TECH_SECTION_HINT = /(technical skills|skills|tech stack|backend|frontend|programming|cloud|infrastructure|technolog|stack)/i;
-
-const TECH_ALIASES: Record<string, string> = {
-  "react.js": "React",
-  reactjs: "React",
-  "node.js": "Node.js",
-  nodejs: "Node.js",
-  javascript: "JavaScript",
-  typescript: "TypeScript",
-  "tailwindcss": "Tailwind CSS",
-  "scss": "SCSS",
-  "html": "HTML",
-  "css": "CSS",
-  "google big query": "Google BigQuery",
-  "big query": "BigQuery",
-  kubernetes: "Kubernetes",
-  postgres: "Postgres",
-  mongodb: "MongoDB",
-  redis: "Redis",
-  kafka: "Kafka",
-  firebase: "Firebase",
-  azure: "Azure",
-  aws: "AWS",
-  "cicd": "CI/CD",
-};
-
-const normalizeTech = (value: string) => {
-  const cleaned = value
-    .trim()
-    .replace(/^[-*]\s*/, "")
-    .replace(/^and\s+/i, "")
-    .replace(/[.]$/, "")
-    .replace(/\s{2,}/g, " ");
-
-  const alias = TECH_ALIASES[cleaned.toLowerCase()];
-  return alias || cleaned;
-};
-
-const extractTechnologiesFromMarkdown = (markdown: string) => {
-  const lines = markdown.split("\n");
-  const result: string[] = [];
-  const seen = new Set<string>();
-
-  const add = (value: string) => {
-    const normalized = normalizeTech(value);
-    if (!normalized || normalized.length < 2) {
-      return;
-    }
-
-    if (!/[a-zA-Z]/.test(normalized)) {
-      return;
-    }
-
-    const key = normalized.toLowerCase();
-    if (seen.has(key)) {
-      return;
-    }
-
-    seen.add(key);
-    result.push(normalized);
-  };
-
-  for (const rawLine of lines) {
-    const line = cleanLine(rawLine);
-    if (!line) {
-      continue;
-    }
-
-    const shouldParse = TECH_SECTION_HINT.test(line) || /\b(React|Node|TypeScript|JavaScript|AWS|Azure|Docker|Kubernetes|NestJS|MongoDB|Postgres|Redis|Kafka|Firebase)\b/i.test(line);
-    if (!shouldParse) {
-      continue;
-    }
-
-    const afterColon = line.includes(":") ? line.split(":").slice(1).join(":") : line;
-    const primaryParts = afterColon.split(/,|;|\||•/g).map((part) => part.trim()).filter(Boolean);
-
-    primaryParts.forEach((part) => {
-      const main = part.replace(/\(.*?\)/g, "").trim();
-      if (main) {
-        add(main);
-      }
-
-      const parenMatches = Array.from(part.matchAll(/\((.*?)\)/g)).map((m) => m[1]);
-      parenMatches.forEach((group) => {
-        group
-          .split(/,|\//g)
-          .map((entry) => entry.trim())
-          .filter(Boolean)
-          .forEach(add);
-      });
-    });
-  }
-
-  return result;
-};
 
 const cleanLine = (line: string) => line.replace(/^[-*]\s*/, "").trim();
 
@@ -146,14 +96,17 @@ const AboutIdeProfile = ({ name, role, markdown, html }: AboutIdeProfileProps) =
   const markdownLines = useMemo(() => markdown.split("\n"), [markdown]);
 
   const technologies = useMemo(() => {
-    const extracted = extractTechnologiesFromMarkdown(markdown);
-    const fromCatalog = TECH_CATALOG.filter((tech) => new RegExp(`\\b${tech.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&")}\\b`, "i").test(markdown));
-
-    const merged = [...extracted, ...fromCatalog.map(normalizeTech)];
-    return Array.from(new Set(merged.map((item) => item.toLowerCase()))).map((key) => {
-      return merged.find((item) => item.toLowerCase() === key) as string;
+    const list = TECH_STACK_BY_CATEGORY.flatMap((group) => group.items);
+    const seen = new Set<string>();
+    return list.filter((item) => {
+      const key = item.toLowerCase();
+      if (seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
     });
-  }, [markdown]);
+  }, []);
 
   const timelineLines = useMemo(() => {
     return markdownLines
@@ -367,18 +320,52 @@ const AboutIdeProfile = ({ name, role, markdown, html }: AboutIdeProfileProps) =
           <div className="mx-auto max-w-7xl">
             <Card className="rounded-xl border border-white/10 bg-[#0B1220] p-6" hoverable={false}>
               <p className="text-xs uppercase tracking-[0.24em] text-[#7C61FF]">Tech Stack</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {technologies.map((tech) => (
-                  <motion.span
-                    key={tech}
-                    initial={reduceMotion ? undefined : { opacity: 0, y: 6 }}
-                    whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.6 }}
-                    className="rounded-full border border-[#7C61FF]/30 bg-[#7C61FF]/10 px-3 py-1 text-sm text-slate-100"
-                  >
-                    {tech}
-                  </motion.span>
-                ))}
+
+              <div className="relative mt-6 flex min-h-[42rem] items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-[#060A14] p-4">
+                <div className="pointer-events-none absolute h-[76%] w-[92%] rounded-[50%] border border-[#7C61FF]/35" />
+                <div className="pointer-events-none absolute h-[70%] w-[86%] rounded-[50%] border border-white/10" />
+
+                <motion.div
+                  className="relative h-[36rem] w-full max-w-[68rem]"
+                  animate={reduceMotion ? undefined : { rotate: 360 }}
+                  transition={reduceMotion ? undefined : { duration: 120, repeat: Infinity, ease: "linear" }}
+                >
+                  {TECH_STACK_BY_CATEGORY.map((bogie, index) => {
+                    const angle = (index / TECH_STACK_BY_CATEGORY.length) * Math.PI * 2;
+                    const radiusX = 45;
+                    const radiusY = 33;
+                    const x = 50 + radiusX * Math.cos(angle);
+                    const y = 50 + radiusY * Math.sin(angle);
+
+                    return (
+                      <motion.div
+                        key={bogie.category}
+                        className="absolute w-56 -translate-x-1/2 -translate-y-1/2"
+                        style={{ left: `${x}%`, top: `${y}%` }}
+                        animate={reduceMotion ? undefined : { rotate: -360 }}
+                        transition={reduceMotion ? undefined : { duration: 120, repeat: Infinity, ease: "linear" }}
+                      >
+                        <div className="rounded-xl border border-[#7C61FF]/35 bg-[#0B1220]/95 p-3 shadow-[0_8px_24px_rgba(3,8,20,0.45)]">
+                          <div className="mb-2 flex items-center justify-between">
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#7C61FF]">{bogie.category}</p>
+                            <span className="text-[10px] text-slate-500">{bogie.items.length}</span>
+                          </div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {bogie.items.map((tech) => (
+                              <span
+                                key={`${bogie.category}-${tech}`}
+                                className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-[10px] leading-tight text-slate-200"
+                                title={tech}
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </motion.div>
               </div>
             </Card>
           </div>
