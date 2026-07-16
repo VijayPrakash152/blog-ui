@@ -91,6 +91,7 @@ const AboutIdeProfile = ({ name, role, markdown, html }: AboutIdeProfileProps) =
   const [activeFile, setActiveFile] = useState<FileTab>("about.md");
   const [commandIndex, setCommandIndex] = useState(0);
   const [typedCommand, setTypedCommand] = useState("");
+  const [activeTechCategory, setActiveTechCategory] = useState<string | null>(TECH_STACK_BY_CATEGORY[0]?.category ?? null);
   const reduceMotion = useReducedMotion();
 
   const markdownLines = useMemo(() => markdown.split("\n"), [markdown]);
@@ -185,6 +186,20 @@ const AboutIdeProfile = ({ name, role, markdown, html }: AboutIdeProfileProps) =
   }, [name, role, timelineLines, technologies]);
 
   const codeLines = activeFile === "about.md" ? markdownLines : devObjectSnippet;
+
+  const activeTechBogie = useMemo(
+    () => TECH_STACK_BY_CATEGORY.find((item) => item.category === activeTechCategory) || TECH_STACK_BY_CATEGORY[0],
+    [activeTechCategory]
+  );
+
+  const ballThemes = [
+    "from-[#7C61FF] to-[#4E3CFF]",
+    "from-[#17D2B9] to-[#0ea89a]",
+    "from-[#82aaff] to-[#5a7bff]",
+    "from-[#f78c6c] to-[#f25f3a]",
+    "from-[#c792ea] to-[#9d6ad9]",
+    "from-[#f07178] to-[#d94a62]",
+  ];
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#05070B] text-white">
@@ -320,6 +335,7 @@ const AboutIdeProfile = ({ name, role, markdown, html }: AboutIdeProfileProps) =
           <div className="mx-auto max-w-7xl">
             <Card className="rounded-xl border border-white/10 bg-[#0B1220] p-6" hoverable={false}>
               <p className="text-xs uppercase tracking-[0.24em] text-[#7C61FF]">Tech Stack</p>
+              <p className="mt-2 text-xs text-slate-400">Hover, focus, or tap a category orb to inspect its technology blocks.</p>
 
               <div className="relative mt-6 flex min-h-[42rem] items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-[#060A14] p-4">
                 <div className="pointer-events-none absolute h-[76%] w-[92%] rounded-[50%] border border-[#7C61FF]/35" />
@@ -336,36 +352,64 @@ const AboutIdeProfile = ({ name, role, markdown, html }: AboutIdeProfileProps) =
                     const radiusY = 33;
                     const x = 50 + radiusX * Math.cos(angle);
                     const y = 50 + radiusY * Math.sin(angle);
+                    const theme = ballThemes[index % ballThemes.length];
+                    const isActive = activeTechBogie?.category === bogie.category;
 
                     return (
                       <motion.div
                         key={bogie.category}
-                        className="absolute w-56 -translate-x-1/2 -translate-y-1/2"
+                        className="absolute -translate-x-1/2 -translate-y-1/2"
                         style={{ left: `${x}%`, top: `${y}%` }}
                         animate={reduceMotion ? undefined : { rotate: -360 }}
                         transition={reduceMotion ? undefined : { duration: 120, repeat: Infinity, ease: "linear" }}
                       >
-                        <div className="rounded-xl border border-[#7C61FF]/35 bg-[#0B1220]/95 p-3 shadow-[0_8px_24px_rgba(3,8,20,0.45)]">
-                          <div className="mb-2 flex items-center justify-between">
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#7C61FF]">{bogie.category}</p>
-                            <span className="text-[10px] text-slate-500">{bogie.items.length}</span>
-                          </div>
-                          <div className="flex flex-wrap gap-1.5">
-                            {bogie.items.map((tech) => (
-                              <span
-                                key={`${bogie.category}-${tech}`}
-                                className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-[10px] leading-tight text-slate-200"
-                                title={tech}
-                              >
-                                {tech}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
+                        <button
+                          type="button"
+                          aria-label={`${bogie.category} tech stack`}
+                          aria-haspopup="dialog"
+                          onMouseEnter={() => setActiveTechCategory(bogie.category)}
+                          onFocus={() => setActiveTechCategory(bogie.category)}
+                          onClick={() => setActiveTechCategory(bogie.category)}
+                          className={`group relative flex h-24 w-24 items-center justify-center rounded-full border text-center shadow-[0_8px_24px_rgba(3,8,20,0.45)] transition ${
+                            isActive ? "scale-105 border-white/50" : "border-white/20 hover:scale-105"
+                          } bg-gradient-to-br ${theme}`}
+                        >
+                          <span className="absolute inset-1 rounded-full bg-[#0B1220]/35 backdrop-blur-sm" />
+                          <span className="relative px-2 text-[11px] font-semibold uppercase leading-tight tracking-[0.08em] text-white">
+                            {bogie.category}
+                          </span>
+                        </button>
                       </motion.div>
                     );
                   })}
                 </motion.div>
+
+                {activeTechBogie ? (
+                  <motion.div
+                    key={activeTechBogie.category}
+                    initial={reduceMotion ? undefined : { opacity: 0, y: 8, scale: 0.98 }}
+                    animate={reduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
+                    transition={{ duration: 0.2 }}
+                    role="dialog"
+                    aria-label={`${activeTechBogie.category} technologies`}
+                    className="absolute z-20 w-[92%] max-w-xl rounded-2xl border border-[#7C61FF]/35 bg-[#0B1220]/95 p-5 shadow-[0_18px_42px_rgba(6,10,24,0.55)] backdrop-blur"
+                  >
+                    <div className="mb-3 flex items-center justify-between">
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#7C61FF]">{activeTechBogie.category}</p>
+                      <span className="text-xs text-slate-400">{activeTechBogie.items.length} technologies</span>
+                    </div>
+                    <div className="flex max-h-48 flex-wrap gap-2 overflow-auto pr-1">
+                      {activeTechBogie.items.map((tech) => (
+                        <span
+                          key={`${activeTechBogie.category}-${tech}`}
+                          className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs text-slate-200"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </motion.div>
+                ) : null}
               </div>
             </Card>
           </div>
