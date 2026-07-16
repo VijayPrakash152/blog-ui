@@ -1,8 +1,6 @@
 import { notFound } from "next/navigation";
-import { GithubIcon, LinkedInIcon, TwitterIcon } from "@/components/ui/icons";
-import { Container } from "@/components/ui/container";
-import { SectionHeader } from "@/components/ui/section-header";
 import { markdownToHtml } from "@/lib/cheatsheet-markdown";
+import AboutIdeProfile from "@/app/components/about/AboutIdeProfile";
 
 const getApiUrl = (path: string) => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL?.trim() || "https://api.vijayprakash.co.in";
@@ -19,12 +17,7 @@ const fetchProfileData = async () => {
   }
 
   const data = await res.json();
-  const profile = data?.data;
-
-  if (profile?.content) {
-    profile.content = await markdownToHtml(profile.content);
-  }
-  return profile;
+  return data?.data;
 };
 
 export async function generateMetadata() {
@@ -82,42 +75,16 @@ const AboutMe = async () => {
     notFound();
   }
 
-  return (
-    <div className="bg-[#05070B] min-h-screen text-white">
-      <section className="border-b border-white/10 py-16">
-        <Container className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div className="rounded-[2rem] border border-white/10 bg-[#0B1220] p-8 shadow-lg shadow-black/20">
-            <img
-              src="/profile-picture.jpg"
-              alt="Vijay Prakash"
-              className="mx-auto mb-6 h-36 w-36 rounded-full object-cover shadow-xl"
-            />
-            <h1 className="text-3xl font-semibold text-white">Vijay Prakash</h1>
-            <p className="mt-3 text-lg text-slate-300">Senior Software Engineer with 5+ years shaping elegant product systems.</p>
-            <div className="mt-8 flex items-center justify-center gap-4 md:justify-start">
-              <a href="https://github.com/VijayPrakash152" target="_blank" rel="noopener noreferrer" className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-200 transition hover:border-[#7C61FF] hover:text-white">
-                <GithubIcon className="h-5 w-5" />
-              </a>
-              <a href="https://www.linkedin.com/in/me-vijay-prakash" target="_blank" rel="noopener noreferrer" className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-200 transition hover:border-[#7C61FF] hover:text-white">
-                <LinkedInIcon className="h-5 w-5" />
-              </a>
-              <a href="https://x.com/VijayPr4788148" target="_blank" rel="noopener noreferrer" className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-200 transition hover:border-[#7C61FF] hover:text-white">
-                <TwitterIcon className="h-5 w-5" />
-              </a>
-            </div>
-          </div>
+  const markdownContent = profile.content || "";
+  const contentHtml = await markdownToHtml(markdownContent);
 
-          <div className="rounded-[2rem] border border-white/10 bg-[#0B1220] p-8 shadow-lg shadow-black/20">
-            <SectionHeader
-              label="About"
-              title="A few words about my journey and what I build."
-              description="This page highlights the motivations, experience, and focus areas behind the blog and engineering work."
-            />
-            <div className="prose prose-invert mt-6 max-w-none text-slate-300" dangerouslySetInnerHTML={{ __html: profile.content }} />
-          </div>
-        </Container>
-      </section>
-    </div>
+  return (
+    <AboutIdeProfile
+      name={profile.name || "Vijay Prakash"}
+      role={profile.description || "Software Engineer"}
+      markdown={markdownContent}
+      html={contentHtml}
+    />
   );
 };
 
