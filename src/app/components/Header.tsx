@@ -10,6 +10,7 @@ import Image from "next/image";
 const navItems = [
   { href: "/", label: "Home" },
   { href: "/posts", label: "Posts" },
+  { href: "/categories", label: "Categories" },
   { href: "/profile", label: "About" },
 ];
 

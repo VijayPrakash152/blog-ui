@@ -156,7 +156,7 @@ html {
 .article-body pre code {
   display: block;
   white-space: pre;
-  color: #e2e8f0;
+  color: inherit;
 }
 
 .article-body table {
@@ -242,8 +242,128 @@ html {
 
 .cheatsheet-content pre code {
   display: block;
-  color: #e2e8f0;
+  color: inherit;
   white-space: pre;
+}
+
+.article-body pre,
+.cheatsheet-content pre,
+.prose pre {
+  background: #0b1220;
+  border: 1px solid rgba(124, 97, 255, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 16px 28px rgba(5, 9, 20, 0.45);
+}
+
+.article-body pre code.hljs,
+.cheatsheet-content pre code.hljs,
+.prose pre code.hljs,
+.article-body pre code[class*="language-"],
+.cheatsheet-content pre code[class*="language-"],
+.prose pre code[class*="language-"] {
+  background: transparent;
+  color: #d4def0;
+}
+
+.article-body .hljs-comment,
+.cheatsheet-content .hljs-comment,
+.prose .hljs-comment,
+.article-body .hljs-quote,
+.cheatsheet-content .hljs-quote,
+.prose .hljs-quote,
+.article-body .token.comment,
+.cheatsheet-content .token.comment,
+.prose .token.comment {
+  color: #7b8a9d;
+}
+
+.article-body .hljs-keyword,
+.cheatsheet-content .hljs-keyword,
+.prose .hljs-keyword,
+.article-body .hljs-selector-tag,
+.cheatsheet-content .hljs-selector-tag,
+.prose .hljs-selector-tag,
+.article-body .token.keyword,
+.cheatsheet-content .token.keyword,
+.prose .token.keyword,
+.article-body .token.selector,
+.cheatsheet-content .token.selector,
+.prose .token.selector {
+  color: #c792ea;
+}
+
+.article-body .hljs-string,
+.cheatsheet-content .hljs-string,
+.prose .hljs-string,
+.article-body .hljs-attr,
+.cheatsheet-content .hljs-attr,
+.prose .hljs-attr,
+.article-body .token.string,
+.cheatsheet-content .token.string,
+.prose .token.string,
+.article-body .token.attr-value,
+.cheatsheet-content .token.attr-value,
+.prose .token.attr-value {
+  color: #c3e88d;
+}
+
+.article-body .hljs-number,
+.cheatsheet-content .hljs-number,
+.prose .hljs-number,
+.article-body .hljs-literal,
+.cheatsheet-content .hljs-literal,
+.prose .hljs-literal,
+.article-body .token.number,
+.cheatsheet-content .token.number,
+.prose .token.number,
+.article-body .token.boolean,
+.cheatsheet-content .token.boolean,
+.prose .token.boolean {
+  color: #f78c6c;
+}
+
+.article-body .hljs-title,
+.cheatsheet-content .hljs-title,
+.prose .hljs-title,
+.article-body .hljs-function,
+.cheatsheet-content .hljs-function,
+.prose .hljs-function,
+.article-body .token.function,
+.cheatsheet-content .token.function,
+.prose .token.function,
+.article-body .token.class-name,
+.cheatsheet-content .token.class-name,
+.prose .token.class-name {
+  color: #82aaff;
+}
+
+.article-body .hljs-variable,
+.cheatsheet-content .hljs-variable,
+.prose .hljs-variable,
+.article-body .hljs-name,
+.cheatsheet-content .hljs-name,
+.prose .hljs-name,
+.article-body .token.variable,
+.cheatsheet-content .token.variable,
+.prose .token.variable,
+.article-body .token.property,
+.cheatsheet-content .token.property,
+.prose .token.property {
+  color: #f07178;
+}
+
+.article-body .hljs-built_in,
+.cheatsheet-content .hljs-built_in,
+.prose .hljs-built_in,
+.article-body .hljs-type,
+.cheatsheet-content .hljs-type,
+.prose .hljs-type,
+.article-body .token.builtin,
+.cheatsheet-content .token.builtin,
+.prose .token.builtin,
+.article-body .token.type,
+.cheatsheet-content .token.type,
+.prose .token.type {
+  color: #4ec9b0;
 }
 
 .article-code-wrapper {
