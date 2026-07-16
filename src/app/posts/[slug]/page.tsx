@@ -2,10 +2,9 @@
 
 import React from 'react';
 import { notFound } from 'next/navigation'; // To handle 404s if the blog is not found
-import { remark } from 'remark';
-import html from 'remark-html';
 import BlogPostComponent from '@/app/components/Blog';
 import { Metadata } from 'next';
+import { markdownToHtml } from '@/lib/cheatsheet-markdown';
 
 interface Params{
   slug: string;
@@ -52,8 +51,7 @@ const fetchSingleBlog = async (slug: string) => {
     return null;
   }
 
-  const processedContent = await remark().use(html).process(blog.content);
-  blog.content = processedContent.toString();
+  blog.content = await markdownToHtml(blog.content);
   return blog;
 };
 

@@ -1,9 +1,8 @@
 import { notFound } from "next/navigation";
 import { GithubIcon, LinkedInIcon, TwitterIcon } from "@/components/ui/icons";
-import { remark } from "remark";
-import html from "remark-html";
 import { Container } from "@/components/ui/container";
 import { SectionHeader } from "@/components/ui/section-header";
+import { markdownToHtml } from "@/lib/cheatsheet-markdown";
 
 const getApiUrl = (path: string) => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL?.trim() || "https://api.vijayprakash.co.in";
@@ -23,8 +22,7 @@ const fetchProfileData = async () => {
   const profile = data?.data;
 
   if (profile?.content) {
-    const processedContent = await remark().use(html).process(profile.content);
-    profile.content = processedContent.toString();
+    profile.content = await markdownToHtml(profile.content);
   }
   return profile;
 };

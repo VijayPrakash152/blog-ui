@@ -11,7 +11,6 @@ const navItems = [
   { href: "/", label: "Home" },
   { href: "/posts", label: "Posts" },
   { href: "/profile", label: "About" },
-  { href: "/#contact", label: "Contact" },
 ];
 
 const Header = () => {
@@ -19,7 +18,7 @@ const Header = () => {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#070A11]/90 text-white backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#070A11]/85 text-white shadow-[0_12px_32px_rgba(0,0,0,0.18)] backdrop-blur-xl">
       <Container className="relative flex items-center justify-between gap-8 py-4">
         <Link href="/" className="inline-flex items-center gap-3 text-lg font-semibold tracking-wide text-white transition hover:text-[#7C61FF]">
           <Image
@@ -32,14 +31,14 @@ const Header = () => {
           Vijay Prakash
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/5 p-1.5 md:flex">
           {navItems.map((item) => {
-            const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+            const isActive = item.href === "/" ? pathname === "/" : pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`text-sm font-medium transition ${isActive ? "text-white" : "text-slate-300 hover:text-white"}`}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition ${isActive ? "bg-[#7C61FF]/20 text-white" : "text-slate-300 hover:bg-white/10 hover:text-white"}`}
               >
                 {item.label}
               </Link>

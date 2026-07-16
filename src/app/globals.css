@@ -275,5 +275,27 @@ html {
   background: #16a34a !important;
 }
 
+@keyframes newsletterRingSpin {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 200% 50%;
+  }
+}
+
+.newsletter-cta-ring {
+  background: linear-gradient(120deg, rgba(124, 97, 255, 0.2), rgba(124, 97, 255, 0.95), rgba(23, 210, 185, 0.6), rgba(124, 97, 255, 0.2));
+  background-size: 200% 200%;
+  animation: newsletterRingSpin 2.8s linear infinite;
+  box-shadow: 0 0 0 1px rgba(124, 97, 255, 0.25), 0 10px 28px rgba(22, 28, 45, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .newsletter-cta-ring {
+    animation: none;
+  }
+}
+
 
 

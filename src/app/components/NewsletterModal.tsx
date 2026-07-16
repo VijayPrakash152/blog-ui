@@ -61,15 +61,17 @@ const NewsletterModal = () => {
 
   return (
     <>
-      <Button
-        type="button"
-        variant="secondary"
-        size="lg"
-        className="rounded-full px-6"
-        onClick={() => setOpen(true)}
-      >
-        Newsletter
-      </Button>
+      <div className="newsletter-cta-ring rounded-full p-[1px]">
+        <Button
+          type="button"
+          variant="secondary"
+          size="lg"
+          className="rounded-full border border-white/10 bg-[#0B1220] px-6 text-white hover:bg-[#111827]"
+          onClick={() => setOpen(true)}
+        >
+          Newsletter
+        </Button>
+      </div>
 
       <AnimatePresence>
         {open ? (

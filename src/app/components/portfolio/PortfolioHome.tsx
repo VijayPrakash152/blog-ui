@@ -79,23 +79,6 @@ const experience = [
   },
 ];
 
-const projects = [
-  {
-    title: "Design systems and product UI",
-    summary: "Crafted interfaces that balance speed, accessibility, and visual polish across modern web products.",
-    stack: ["React", "TypeScript", "Tailwind"],
-    github: "https://github.com/VijayPrakash152",
-    demo: "https://vijayprakash.co.in",
-  },
-  {
-    title: "Engineering blog platform",
-    summary: "Built a content-first experience with thoughtful reading flow, architecture, and performance in mind.",
-    stack: ["Next.js", "Strapi", "Framer Motion"],
-    github: "https://github.com/VijayPrakash152/blog-ui",
-    demo: "https://vijayprakash.co.in/posts",
-  },
-];
-
 const stats = [
   { value: "5+", label: "Years building" },
   { value: "20+", label: "Product solutions" },
@@ -237,36 +220,6 @@ const PortfolioHome = ({ posts }: PortfolioHomeProps) => {
                     <li key={achievement} className="rounded-2xl border border-white/10 bg-white/5 p-3">{achievement}</li>
                   ))}
                 </ul>
-              </motion.article>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      <section className="px-6 py-20 sm:px-10 lg:px-16">
-        <Container>
-          <SectionHeader label="Featured work" title="Selected projects and product experiences." description="A small view into the work I enjoy building most." />
-          <div className="mt-10 grid gap-6 lg:grid-cols-2">
-            {projects.map((project, index) => (
-              <motion.article key={project.title} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ duration: 0.35, delay: index * 0.05 }} className="group overflow-hidden rounded-[1.75rem] border border-white/10 bg-[#0B1220] shadow-sm shadow-black/20">
-                <div className="h-40 bg-gradient-to-br from-[#7C61FF]/20 via-transparent to-[#17D2B9]/15" />
-                <div className="p-8">
-                  <h3 className="text-2xl font-semibold text-white">{project.title}</h3>
-                  <p className="mt-4 text-base leading-7 text-slate-400">{project.summary}</p>
-                  <div className="mt-6 flex flex-wrap gap-2">
-                    {project.stack.map((tech) => (
-                      <span key={tech} className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-slate-300">{tech}</span>
-                    ))}
-                  </div>
-                  <div className="mt-8 flex flex-wrap gap-3">
-                    <a href={project.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-[#7C61FF] transition hover:text-white">
-                      GitHub <ArrowRight className="h-4 w-4" />
-                    </a>
-                    <a href={project.demo} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-300 transition hover:text-white">
-                      Demo <ArrowRight className="h-4 w-4" />
-                    </a>
-                  </div>
-                </div>
               </motion.article>
             ))}
           </div>
